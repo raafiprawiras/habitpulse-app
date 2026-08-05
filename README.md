@@ -91,6 +91,7 @@ habitpulse-app/
 ├── index.html                  # HTML5 Master Entry Page
 ├── package.json                # Project Dependencies & Build Scripts
 ├── vite.config.js              # Vite Build Configuration
+├── .gitignore                  # Git Ignore Rules (Ignores node_modules & dist)
 ├── public/
 │   ├── favicon.svg             # Vector SVG Favicon Icon
 │   ├── logo.svg                # Primary Vector Logo
@@ -159,30 +160,31 @@ npm run preview
 
 ## 🌐 Production Deployment (Vercel Integration)
 
-Aplikasi ini siap di-deploy ke **Vercel Production**:
+### Solusi Vercel Permission Denied Error (`exit code 126`)
+Error `Permission denied` pada Vercel terjadi apabila folder `node_modules` dari OS Windows sebelumnya terikut ter-commit ke GitHub tanpa file `.gitignore`. Pada sistem Linux Vercel, binary file di `node_modules/.bin/vite` kehilangan hak akses eksekusi (`+x`).
 
-### Langkah Deployment ke Vercel:
+### Perintah Git Fix & Deployment:
 
-1. **Commit & Push ke GitHub**:
+1. **Untrack `node_modules` & `dist` dari Git Cache, kemudian Push**:
    ```bash
-   git status
+   git rm -r --cached node_modules
+   git rm -r --cached dist
    git add .
-   git commit -m "Complete HabitPulse health tracker"
+   git commit -m "Fix Vercel build: add .gitignore and untrack node_modules"
    git push origin main
    ```
 
 2. **Deploy di Vercel Dashboard**:
-   - Login ke akun [Vercel](https://vercel.com).
-   - Klik tombol **"Add New" ➔ "Project"**.
+   - Login ke [Vercel Dashboard](https://vercel.com).
    - Import repository GitHub `habitpulse-app`.
-   - Konfirmasi pengaturan project:
+   - Konfirmasi pengaturan:
      - **Framework Preset**: `Vite`
      - **Build Command**: `npm run build`
      - **Output Directory**: `dist`
-   - Klik **"Deploy"**.
+   - Klik **"Redeploy"** atau **"Deploy"**.
 
 3. **Continuous Deployment (CI/CD)**:
-   - Setiap push berikutnya ke branch `main` GitHub akan secara otomatis memicu build dan update deployment terbaru melalui integrasi Vercel CI/CD.
+   - Setiap push berikutnya ke branch `main` GitHub akan secara otomatis memicu build dan update deployment terbaru melalui Vercel.
 
 ---
 
@@ -196,7 +198,7 @@ Proyek **HabitPulse** dikembangkan dengan bantuan **AI Development Agent**.
   - Mempercepat penulisan kode HTML5 semantis, CSS3 modern, dan fungsi JavaScript ES6+.
   - Membantu proses refactoring, sanitasi keamanan XSS, dan penanganan kesalahan LocalStorage.
   - Membantu penyusunan media queries responsive design dari 320px hingga 1440px+.
-  - Membantu code review dan dokumentasi teknis.
+  - Membantu code review, Vercel build diagnostics, dan dokumentasi teknis.
 
 *Catatan: AI digunakan sebagai asisten pengembang (development assistant). Seluruh keputusan fitur, pengujian alur kerja, validasi logika, dan evaluasi kualitas akhir tetap merupakan bagian dari proses developer.*
 
