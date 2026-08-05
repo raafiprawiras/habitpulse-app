@@ -8,18 +8,18 @@
   flex-direction: column;
 }
 
-/* Minimal Header Navigation */
+/* Minimal Header Navigation (Always On Top Layer) */
 .landing-header {
   position: sticky;
   top: 0;
   left: 0;
   right: 0;
   height: 72px;
-  background-color: rgba(7, 13, 16, 0.85);
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
+  background-color: rgba(7, 13, 16, 0.95);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
   border-bottom: 1px solid var(--border-color);
-  z-index: var(--z-sticky);
+  z-index: var(--z-sticky); /* Explicit Stacking Layer: 100 */
 }
 
 .landing-nav-content {
@@ -72,9 +72,10 @@
   transition: transform var(--transition-fast);
 }
 
-/* Hero Section */
+/* Hero Section (Layered Underneath Header) */
 .landing-hero-section {
   position: relative;
+  z-index: var(--z-normal); /* Stacking Layer: 1 */
   padding-block: clamp(3.5rem, 6vw, 5.5rem);
   overflow: hidden;
 }
@@ -88,12 +89,12 @@
   height: 400px;
   background: radial-gradient(circle, rgba(140, 251, 44, 0.15) 0%, rgba(7, 13, 16, 0) 70%);
   pointer-events: none;
-  z-index: 0;
+  z-index: var(--z-back); /* Background Layer: -1 */
 }
 
 .landing-hero-wrapper {
   position: relative;
-  z-index: 1;
+  z-index: var(--z-normal);
 }
 
 .hero-content {
