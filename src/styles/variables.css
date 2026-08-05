@@ -1,50 +1,52 @@
-/* HabitPulse Design System Tokens — SaaS Health-Tech Edition */
+/* HabitPulse Design System Tokens — Dark Fitness Technology & Athletic Edition */
 :root {
-  /* Color Palette - Core Brand */
-  --primary: #16A34A;         /* Primary Emerald 600 */
-  --primary-hover: #15803D;   /* Darker Emerald 700 */
-  --secondary: #22C55E;       /* Secondary Accent Emerald 500 */
-  --accent: #22C55E;
+  /* Color Palette - Core Brand Lime Green */
+  --primary: #8CFB2C;                 /* Electric Athletic Lime Green */
+  --primary-hover: #7CE424;           /* Saturated Lime Green */
+  --primary-soft: rgba(140, 251, 44, 0.12);
+  --secondary: #8CFB2C;
+  --accent: #8CFB2C;
 
-  --dark-900: #0F172A;        /* Slate 900 */
-  --dark-800: #1E293B;        /* Slate 800 */
-  --dark-700: #334155;        /* Slate 700 */
+  /* Dark Athletic Background Hierarchy */
+  --dark-900: #070D10;                /* Deep Athletic Dark */
+  --dark-800: #0B1216;                /* Dark Secondary */
+  --dark-700: #111A1F;                /* Dark Surface */
 
   /* Status & Feedback Colors */
-  --color-success: #10B981;   /* Emerald Green */
-  --color-warning: #F59E0B;   /* Amber Warning */
-  --color-danger: #EF4444;    /* Rose Danger */
-  --color-info: #3B82F6;      /* Blue Info */
+  --color-success: #8CFB2C;           /* Lime Success */
+  --color-warning: #F59E0B;           /* Amber Warning */
+  --color-danger: #EF4444;            /* Rose Danger */
+  --color-info: #38BDF8;              /* Sky Info */
 
   /* Activity Specific Color Tokens */
-  --activity-running: #F97316;   /* Energetic Orange */
-  --activity-cycling: #06B6D4;   /* Cyan Blue */
-  --activity-walking: #8B5CF6;   /* Purple Pulse */
-  --activity-workout: #EC4899;   /* Hot Pink Power */
+  --activity-running: #8CFB2C;        /* Lime Pulse Running */
+  --activity-cycling: #38BDF8;        /* Electric Cyan Cycling */
+  --activity-walking: #A855F7;        /* Pulse Violet Walking */
+  --activity-workout: #F97316;        /* Flame Orange Workout */
 
-  /* Light Mode Semantic Tokens */
-  --bg-main: #F8FAFC;         /* Light Background */
-  --bg-surface: #FFFFFF;      /* Card / Modal Surface */
-  --bg-elevated: #FFFFFF;
-  --bg-subtle: #F1F5F9;
-  --bg-glass: rgba(255, 255, 255, 0.88);
+  /* Default Dark Mode Semantic Tokens (Athletic Performance Control Center) */
+  --bg-main: #070D10;                 /* Dark Background */
+  --bg-surface: #111A1F;              /* Surface */
+  --bg-elevated: #172126;             /* Surface Elevated */
+  --bg-subtle: #0B1216;               /* Secondary Background */
+  --bg-glass: rgba(17, 26, 31, 0.88);
 
-  --text-primary: #0F172A;    /* Dark Text */
-  --text-secondary: #64748B;  /* Slate 500 */
-  --text-muted: #94A3B8;      /* Slate 400 */
-  --text-inverse: #FFFFFF;
+  --text-primary: #F8FAFC;            /* Clean White Text */
+  --text-secondary: #94A3B8;          /* Slate 400 */
+  --text-muted: #64748B;              /* Slate 500 */
+  --text-inverse: #070D10;
 
-  --border-color: #E2E8F0;    /* Crisp Subtle Border */
-  --border-hover: #CBD5E1;
-  --ring-focus: rgba(22, 163, 74, 0.35);
+  --border-color: rgba(255, 255, 255, 0.10);  /* Crisp Thin Border */
+  --border-hover: rgba(140, 251, 44, 0.35);
+  --ring-focus: rgba(140, 251, 44, 0.40);
 
-  /* Elevation & Shadows (Subtle, Crisp SaaS Layers) */
-  --shadow-xs: 0 1px 2px 0 rgba(15, 23, 42, 0.03);
-  --shadow-sm: 0 1px 3px 0 rgba(15, 23, 42, 0.06), 0 1px 2px -1px rgba(15, 23, 42, 0.04);
-  --shadow-md: 0 4px 6px -1px rgba(15, 23, 42, 0.08), 0 2px 4px -2px rgba(15, 23, 42, 0.04);
-  --shadow-lg: 0 10px 15px -3px rgba(15, 23, 42, 0.08), 0 4px 6px -4px rgba(15, 23, 42, 0.03);
-  --shadow-xl: 0 20px 25px -5px rgba(15, 23, 42, 0.1), 0 8px 10px -6px rgba(15, 23, 42, 0.04);
-  --shadow-glow: 0 0 20px rgba(34, 197, 94, 0.25);
+  /* Elevation & Shadows (Athletic Low-Glow SaaS Layers) */
+  --shadow-xs: 0 1px 2px 0 rgba(0, 0, 0, 0.4);
+  --shadow-sm: 0 2px 4px 0 rgba(0, 0, 0, 0.5);
+  --shadow-md: 0 4px 8px -1px rgba(0, 0, 0, 0.6);
+  --shadow-lg: 0 10px 20px -3px rgba(0, 0, 0, 0.7);
+  --shadow-xl: 0 20px 30px -5px rgba(0, 0, 0, 0.8);
+  --shadow-glow: 0 0 20px rgba(140, 251, 44, 0.20);
 
   /* Spacing Scale (4px System) */
   --space-1: 0.25rem;   /* 4px */
@@ -96,32 +98,33 @@
   --transition-slow: 350ms cubic-bezier(0.4, 0, 0.2, 1);
 }
 
-/* Dark Mode Tokens Override */
-[data-theme="dark"] {
-  --primary: #22C55E;
-  --primary-hover: #16A34A;
-  --secondary: #16A34A;
+/* Light Theme Override (Optional contrast support) */
+[data-theme="light"] {
+  --primary: #16A34A;
+  --primary-hover: #15803D;
+  --primary-soft: rgba(22, 163, 74, 0.12);
+  --secondary: #22C55E;
   --accent: #22C55E;
 
-  --bg-main: #0B0F19;
-  --bg-surface: #151D2A;
-  --bg-elevated: #1E293B;
-  --bg-subtle: #1E293B;
-  --bg-glass: rgba(15, 23, 42, 0.88);
+  --bg-main: #F8FAFC;
+  --bg-surface: #FFFFFF;
+  --bg-elevated: #FFFFFF;
+  --bg-subtle: #F1F5F9;
+  --bg-glass: rgba(255, 255, 255, 0.88);
 
-  --text-primary: #F8FAFC;
-  --text-secondary: #94A3B8;
-  --text-muted: #64748B;
-  --text-inverse: #0F172A;
+  --text-primary: #0F172A;
+  --text-secondary: #64748B;
+  --text-muted: #94A3B8;
+  --text-inverse: #FFFFFF;
 
-  --border-color: #263346;
-  --border-hover: #334155;
-  --ring-focus: rgba(34, 197, 94, 0.45);
+  --border-color: #E2E8F0;
+  --border-hover: #CBD5E1;
+  --ring-focus: rgba(22, 163, 74, 0.35);
 
-  --shadow-xs: 0 1px 2px 0 rgba(0, 0, 0, 0.3);
-  --shadow-sm: 0 1px 3px 0 rgba(0, 0, 0, 0.4);
-  --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.5);
-  --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.6);
-  --shadow-xl: 0 20px 25px -5px rgba(0, 0, 0, 0.7);
-  --shadow-glow: 0 0 25px rgba(34, 197, 94, 0.35);
+  --shadow-xs: 0 1px 2px 0 rgba(15, 23, 42, 0.03);
+  --shadow-sm: 0 1px 3px 0 rgba(15, 23, 42, 0.06);
+  --shadow-md: 0 4px 6px -1px rgba(15, 23, 42, 0.08);
+  --shadow-lg: 0 10px 15px -3px rgba(15, 23, 42, 0.08);
+  --shadow-xl: 0 20px 25px -5px rgba(15, 23, 42, 0.1);
+  --shadow-glow: 0 0 20px rgba(34, 197, 94, 0.25);
 }

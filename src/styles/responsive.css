@@ -1,4 +1,4 @@
-/* HabitPulse Responsive Design System — Milestone 10 Edition */
+/* HabitPulse Responsive Design System — Athletic Dark Edition */
 
 /* Mobile Bottom Navigation Bar (< 768px) */
 .mobile-bottom-nav {
@@ -16,7 +16,7 @@
   justify-content: space-around;
   align-items: center;
   padding: 0 0.5rem;
-  box-shadow: 0 -4px 16px rgba(0, 0, 0, 0.06);
+  box-shadow: 0 -4px 16px rgba(0, 0, 0, 0.4);
 }
 
 .mobile-bottom-item {
@@ -44,11 +44,11 @@
 
 .mobile-bottom-item:hover,
 .mobile-bottom-item.active {
-  color: var(--primary);
+  color: #8CFB2C;
 }
 
 .mobile-bottom-item.active svg {
-  stroke: var(--primary);
+  stroke: #8CFB2C;
 }
 
 /* FAB Action Button in Bottom Nav */
@@ -59,10 +59,10 @@
   width: 44px;
   height: 44px;
   border-radius: var(--radius-full);
-  background-color: var(--primary);
-  color: #FFFFFF;
+  background-color: #8CFB2C;
+  color: #070D10;
   border: none;
-  box-shadow: 0 4px 12px rgba(22, 163, 74, 0.35);
+  box-shadow: 0 4px 14px rgba(140, 251, 44, 0.35);
   margin-top: -16px;
   cursor: pointer;
   touch-action: manipulation;
@@ -73,17 +73,10 @@
   .container {
     max-width: 1280px;
   }
-  .hero-title {
-    font-size: 3.5rem;
-  }
 }
 
 /* Laptop (1024px to 1439px) */
 @media (max-width: 1439px) and (min-width: 1024px) {
-  .hero-grid {
-    grid-template-columns: 1fr 1fr;
-    gap: var(--space-8);
-  }
   .stats-8-grid {
     grid-template-columns: repeat(4, 1fr);
     gap: var(--space-4);
@@ -96,12 +89,6 @@
 
 /* Tablet (768px to 1023px) */
 @media (max-width: 1023px) and (min-width: 768px) {
-  .hero-grid {
-    grid-template-columns: 1fr;
-    gap: var(--space-8);
-    text-align: center;
-  }
-
   .dashboard-top-grid {
     grid-template-columns: 1fr;
   }
@@ -122,46 +109,18 @@
     grid-template-columns: repeat(2, 1fr);
   }
 
-  .hero-description {
-    margin-left: auto;
-    margin-right: auto;
-  }
-
-  .hero-cta {
-    justify-content: center;
-  }
-
-  .hero-stats-strip {
-    justify-content: center;
-  }
-
-  .activity-types-grid {
-    grid-template-columns: repeat(2, 1fr);
-    gap: var(--space-4);
-  }
-
-  .features-grid {
-    grid-template-columns: repeat(2, 1fr);
-    gap: var(--space-4);
-  }
-
-  .steps-grid {
-    grid-template-columns: 1fr;
-    gap: var(--space-6);
-  }
-
-  .benefits-grid {
+  .category-strip-grid {
     grid-template-columns: repeat(2, 1fr);
   }
 
-  .footer-top {
-    grid-template-columns: 1fr 1fr;
+  .athletic-features-grid {
+    grid-template-columns: repeat(2, 1fr);
   }
 }
 
 /* Mobile Devices (< 768px: 320px, 360px, 375px, 390px, 430px) */
 @media (max-width: 767px) {
-  body {
+  .dashboard-app-body {
     padding-bottom: 74px; /* Space for fixed bottom navigation bar */
     overflow-x: hidden;
   }
@@ -170,12 +129,8 @@
     height: 60px;
   }
 
-  .nav-menu {
+  .dashboard-nav-tabs {
     display: none;
-  }
-
-  .hamburger-btn {
-    display: flex;
   }
 
   .mobile-bottom-nav {
@@ -220,75 +175,49 @@
     grid-template-columns: 1fr;
   }
 
-  .hero-section {
-    padding: 2rem 0 1.5rem;
+  /* Hero & Landing Responsive Adjustments */
+  .landing-hero-section {
+    padding: 3rem 0 2.5rem;
   }
 
-  .hero-grid {
+  .landing-hero-cta {
+    flex-direction: column;
+    width: 100%;
+  }
+
+  .landing-hero-cta .btn {
+    width: 100%;
+  }
+
+  .hero-quick-stats {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1.25rem;
+    padding: 1.25rem;
+  }
+
+  .stat-quick-divider {
+    display: none;
+  }
+
+  .category-strip-grid {
     grid-template-columns: 1fr;
-    gap: var(--space-6);
-    text-align: center;
+    gap: 1rem;
   }
 
-  .hero-title {
-    font-size: clamp(1.8rem, 7vw, 2.5rem);
+  .athletic-features-grid {
+    grid-template-columns: 1fr;
+    gap: 1rem;
   }
 
-  .hero-description {
-    font-size: var(--font-size-base);
-    margin-left: auto;
-    margin-right: auto;
-  }
-
-  .hero-cta {
+  .footer-landing-content {
     flex-direction: column;
-    width: 100%;
-  }
-
-  .hero-cta .btn {
-    width: 100%;
-  }
-
-  .hero-stats-strip {
-    flex-direction: column;
-    gap: var(--space-3);
     align-items: center;
+    text-align: center;
+    gap: 1.5rem;
   }
 
-  .activity-types-grid {
-    grid-template-columns: 1fr;
-    gap: var(--space-4);
-  }
-
-  .features-grid {
-    grid-template-columns: 1fr;
-    gap: var(--space-4);
-  }
-
-  .steps-grid {
-    grid-template-columns: 1fr;
-    gap: var(--space-6);
-  }
-
-  .benefits-grid {
-    grid-template-columns: 1fr;
-  }
-
-  .cta-banner-card {
-    padding: 2rem 1rem;
-  }
-
-  .cta-banner-card h2 {
-    font-size: var(--font-size-xl);
-  }
-
-  .footer-top {
-    grid-template-columns: 1fr;
-    gap: var(--space-6);
-  }
-
-  .footer-bottom {
-    flex-direction: column;
+  .footer-landing-copy {
     text-align: center;
   }
 

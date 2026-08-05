@@ -1,0 +1,665 @@
+<!DOCTYPE html>
+<html lang="id" data-theme="dark">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="theme-color" content="#070D10" />
+
+  <!-- Anti-FOUC Theme Script -->
+  <script>
+    (function() {
+      try {
+        const stored = JSON.parse(localStorage.getItem('habitpulse_theme'));
+        const theme = stored !== null ? stored : 'dark';
+        if (theme === 'light') {
+          document.documentElement.setAttribute('data-theme', 'light');
+        } else {
+          document.documentElement.setAttribute('data-theme', 'dark');
+        }
+      } catch (e) {}
+    })();
+  </script>
+
+  <!-- Primary Meta Tags -->
+  <title>Dashboard — HabitPulse Health Tracker</title>
+  <meta name="title" content="Dashboard — HabitPulse Health Tracker" />
+  <meta name="description" content="Manage, log, monitor, and analyze your workout sessions with the HabitPulse performance control center." />
+
+  <!-- Favicon -->
+  <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+
+  <!-- Google Fonts: Plus Jakarta Sans -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+
+  <!-- App Styles -->
+  <link rel="stylesheet" href="/src/style.css" />
+</head>
+<body class="dashboard-app-body">
+
+  <!-- Application Top Header Bar -->
+  <header class="app-header">
+    <div class="container header-content">
+      <div style="display: flex; align-items: center; gap: 1.5rem;">
+        <a href="/" class="brand-logo" aria-label="Kembali ke Landing Page">
+          <img src="/src/assets/logo/logo.svg" alt="HabitPulse Logo" class="brand-logo-img" />
+        </a>
+        <span class="badge" style="background-color: var(--primary-soft); color: var(--primary); font-weight: 700;">CONTROL CENTER</span>
+      </div>
+
+      <!-- Compact Tab Navigation (Desktop / Tablet) -->
+      <nav class="nav-menu dashboard-nav-tabs" aria-label="Dashboard Tabs Navigation">
+        <a href="#dashboard-overview" class="nav-link active" data-tab="overview">Overview</a>
+        <a href="#history" class="nav-link" data-tab="history">Activities</a>
+        <a href="#statistics" class="nav-link" data-tab="statistics">Statistics</a>
+        <a href="#achievements" class="nav-link" data-tab="achievements">Badges</a>
+        <a href="#settings" class="nav-link" data-tab="settings">Settings</a>
+      </nav>
+
+      <div class="nav-actions">
+        <button class="btn-icon theme-toggle-btn" aria-label="Toggle Theme">
+          <!-- Injected via theme.js -->
+        </button>
+        
+        <button class="btn btn-primary btn-trigger-modal">
+          <span id="icon-btn-add"></span>
+          <span>Add Activity</span>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- Mobile Bottom Navigation Bar -->
+  <nav id="mobile-bottom-nav" class="mobile-bottom-nav" aria-label="Mobile Bottom Navigation">
+    <a href="#dashboard-overview" class="mobile-bottom-item active">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect width="7" height="9" x="3" y="3" rx="1"/><rect width="7" height="5" x="14" y="3" rx="1"/><rect width="7" height="9" x="14" y="12" rx="1"/><rect width="7" height="5" x="3" y="16" rx="1"/></svg>
+      <span>Overview</span>
+    </a>
+    <a href="#history" class="mobile-bottom-item">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/></svg>
+      <span>Activities</span>
+    </a>
+    <button class="mobile-bottom-fab btn-trigger-modal" aria-label="Catat Aktivitas Baru">
+      <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+    </button>
+    <a href="#statistics" class="mobile-bottom-item">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 3v18h18"/><path d="m19 9-5 5-4-4-3 3"/></svg>
+      <span>Stats</span>
+    </a>
+    <a href="#settings" class="mobile-bottom-item">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12.22 2h-.44a2 2 0 0 0-2 2v.18a2 2 0 0 1-1 1.73l-.43.25a2 2 0 0 1-2 0l-.15-.08a2 2 0 0 0-2.73.73l-.22.38a2 2 0 0 0 .73 2.73l.15.1a2 2 0 0 1 1 1.72v.51a2 2 0 0 1-1 1.74l-.15.09a2 2 0 0 0-.73 2.73l.22.38a2 2 0 0 0 2.73.73l.15-.08a2 2 0 0 1 2 0l.43.25a2 2 0 0 1 1 1.73V20a2 2 0 0 0 2 2h.44a2 2 0 0 0 2-2v-.18a2 2 0 0 1 1-1.73l.43-.25a2 2 0 0 1 2 0l.15.08a2 2 0 0 0 2.73-.73l.22-.38a2 2 0 0 0-.73-2.73l-.15-.1a2 2 0 0 1-1-1.72v-.51a2 2 0 0 1 1-1.74l.15-.09a2 2 0 0 0 .73-2.73l-.22-.38a2 2 0 0 0-2.73-.73l-.15.08a2 2 0 0 1-2 0l-.43-.25a2 2 0 0 1-1-1.73V4a2 2 0 0 0-2-2z"/><circle cx="12" cy="12" r="3"/></svg>
+      <span>Settings</span>
+    </a>
+  </nav>
+
+  <main style="padding-top: 5rem; padding-bottom: 4rem;">
+    <!-- Container 1: Overview Tab -->
+    <div id="dashboard-overview" class="dashboard-tab-content">
+      <div class="container">
+        
+        <!-- Motivational Banner Container -->
+        <div id="motivational-banner-container">
+          <!-- Injected via achievements.js -->
+        </div>
+
+        <!-- Dashboard Welcome Header Banner -->
+        <div class="dashboard-welcome-banner">
+          <div class="greeting-text-group">
+            <h1 id="dashboard-greeting-title">Good Day, Athlete!</h1>
+            <p>Ready to keep your healthy streak going?</p>
+          </div>
+          <button class="btn btn-primary btn-trigger-modal">
+            <span>+ Add Activity</span>
+          </button>
+        </div>
+
+        <!-- Dashboard Top Grid: 4 Stat Cards + Weekly Goals Card -->
+        <div class="dashboard-top-grid">
+          
+          <!-- 4 Overview Stat Cards -->
+          <div class="stats-grid">
+            <div class="stat-card">
+              <div id="icon-stat-count" class="stat-icon-box"></div>
+              <div class="stat-details">
+                <div id="stat-total-count" class="stat-value">0</div>
+                <div class="stat-label">Total Activities</div>
+              </div>
+            </div>
+
+            <div class="stat-card">
+              <div id="icon-stat-distance" class="stat-icon-box"></div>
+              <div class="stat-details">
+                <div id="stat-total-distance" class="stat-value">0.00 km</div>
+                <div class="stat-label">Total Distance</div>
+              </div>
+            </div>
+
+            <div class="stat-card">
+              <div id="icon-stat-duration" class="stat-icon-box"></div>
+              <div class="stat-details">
+                <div id="stat-total-duration" class="stat-value">0m</div>
+                <div class="stat-label">Active Time</div>
+              </div>
+            </div>
+
+            <div class="stat-card">
+              <div id="icon-stat-calories" class="stat-icon-box"></div>
+              <div class="stat-details">
+                <div id="stat-total-calories" class="stat-value">0 kcal</div>
+                <div class="stat-label">Calories Burned</div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Weekly Goals Progress Card -->
+          <div class="weekly-goal-card">
+            <div class="goal-card-header">
+              <span class="goal-title">
+                <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/></svg>
+                Weekly Goals
+              </span>
+              <div style="display: flex; align-items: center; gap: 0.5rem;">
+                <span id="weekly-goal-badge" class="goal-badge">0%</span>
+                <button id="btn-edit-goals" class="btn-icon" style="width: 28px; height: 28px;" title="Set Custom Weekly Goals">⚙️</button>
+              </div>
+            </div>
+
+            <!-- Activities Goal Progress -->
+            <div class="goal-main-stat">
+              <div id="weekly-goal-number" class="goal-number">0 / 5 Activities</div>
+              <div id="weekly-goal-subtext" class="goal-subtext">0% of weekly activity goal</div>
+              <div class="progress-bar-track" style="margin-top: 0.35rem;">
+                <div id="weekly-goal-fill" class="progress-bar-fill" style="width: 0%;"></div>
+              </div>
+            </div>
+
+            <!-- Multi Goals Progress Sub-items -->
+            <div class="goal-sub-progress">
+              <!-- Active Minutes Goal -->
+              <div class="goal-sub-item">
+                <div class="goal-sub-item-header">
+                  <span>Active Minutes</span>
+                  <span id="goal-mins-number">0 / 150 Mins</span>
+                </div>
+                <div class="progress-bar-track">
+                  <div id="goal-mins-fill" class="progress-bar-fill" style="width: 0%; background: linear-gradient(90deg, #38BDF8 0%, #8CFB2C 100%);"></div>
+                </div>
+              </div>
+
+              <!-- Distance Goal -->
+              <div class="goal-sub-item">
+                <div class="goal-sub-item-header">
+                  <span>Distance</span>
+                  <span id="goal-dist-number">0.0 / 20 KM</span>
+                </div>
+                <div class="progress-bar-track">
+                  <div id="goal-dist-fill" class="progress-bar-fill" style="width: 0%; background: linear-gradient(90deg, #A855F7 0%, #F97316 100%);"></div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Activity Breakdown Section -->
+        <div class="breakdown-section">
+          <div class="breakdown-title-bar">
+            <h2>Activity Breakdown</h2>
+            <span style="font-size: 0.8rem; color: var(--text-secondary);">Summary by sport category</span>
+          </div>
+
+          <div class="breakdown-grid">
+            <!-- Running Breakdown -->
+            <div class="breakdown-card running">
+              <div class="breakdown-card-header">
+                <div id="icon-breakdown-running" class="breakdown-card-icon"></div>
+                <span class="breakdown-card-title">Running</span>
+              </div>
+              <div id="breakdown-count-running" class="breakdown-card-count">0 Sesi</div>
+              <div class="breakdown-mini-bar">
+                <div id="breakdown-fill-running" class="breakdown-mini-fill" style="width: 0%;"></div>
+              </div>
+              <div id="breakdown-meta-running" class="breakdown-card-footer">0.00 km • 0m</div>
+            </div>
+
+            <!-- Cycling Breakdown -->
+            <div class="breakdown-card cycling">
+              <div class="breakdown-card-header">
+                <div id="icon-breakdown-cycling" class="breakdown-card-icon"></div>
+                <span class="breakdown-card-title">Cycling</span>
+              </div>
+              <div id="breakdown-count-cycling" class="breakdown-card-count">0 Sesi</div>
+              <div class="breakdown-mini-bar">
+                <div id="breakdown-fill-cycling" class="breakdown-mini-fill" style="width: 0%;"></div>
+              </div>
+              <div id="breakdown-meta-cycling" class="breakdown-card-footer">0.00 km • 0m</div>
+            </div>
+
+            <!-- Walking Breakdown -->
+            <div class="breakdown-card walking">
+              <div class="breakdown-card-header">
+                <div id="icon-breakdown-walking" class="breakdown-card-icon"></div>
+                <span class="breakdown-card-title">Walking</span>
+              </div>
+              <div id="breakdown-count-walking" class="breakdown-card-count">0 Sesi</div>
+              <div class="breakdown-mini-bar">
+                <div id="breakdown-fill-walking" class="breakdown-mini-fill" style="width: 0%;"></div>
+              </div>
+              <div id="breakdown-meta-walking" class="breakdown-card-footer">0.00 km • 0m</div>
+            </div>
+
+            <!-- Workout Breakdown -->
+            <div class="breakdown-card workout">
+              <div class="breakdown-card-header">
+                <div id="icon-breakdown-workout" class="breakdown-card-icon"></div>
+                <span class="breakdown-card-title">Workout</span>
+              </div>
+              <div id="breakdown-count-workout" class="breakdown-card-count">0 Sesi</div>
+              <div class="breakdown-mini-bar">
+                <div id="breakdown-fill-workout" class="breakdown-mini-fill" style="width: 0%;"></div>
+              </div>
+              <div id="breakdown-meta-workout" class="breakdown-card-footer">0m • 0 kcal</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Recent Activities Feed Bar -->
+        <div class="filter-bar">
+          <h2 style="font-size: 1.25rem; font-weight: 800;">Recent Activities</h2>
+
+          <div class="filter-tabs" role="tablist">
+            <button class="filter-tab active" data-filter="all" role="tab">Semua</button>
+            <button class="filter-tab" data-filter="running" role="tab">Lari</button>
+            <button class="filter-tab" data-filter="cycling" role="tab">Bersepeda</button>
+            <button class="filter-tab" data-filter="walking" role="tab">Jalan Kaki</button>
+            <button class="filter-tab" data-filter="workout" role="tab">Workout</button>
+          </div>
+        </div>
+
+        <!-- Activities Feed Container -->
+        <div id="activities-container" class="activities-list">
+          <!-- Dynamic rendering via JS -->
+        </div>
+
+      </div>
+    </div>
+
+    <!-- Section 2: Milestone Achievements Section -->
+    <section id="achievements" class="section-padding">
+      <div class="container">
+        <div class="section-header">
+          <span class="section-subtitle">Lencana Pencapaian</span>
+          <h2 class="section-title">Milestone Achievements</h2>
+          <p class="section-desc">Unlock lencana pencapaian eksklusif berdasarkan aktivitas nyata dan rekor latihan Anda.</p>
+        </div>
+
+        <!-- Achievements Grid Container -->
+        <div id="achievements-grid-container" class="achievements-grid">
+          <!-- Rendered dynamically by achievements.js -->
+        </div>
+      </div>
+    </section>
+
+    <!-- Section 3: Statistics & Analytics Section -->
+    <section id="statistics" class="section-padding">
+      <div class="container">
+        <div class="section-header">
+          <span class="section-subtitle">Analitik Kebugaran</span>
+          <h2 class="section-title">Statistics & Progress Insights</h2>
+          <p class="section-desc">Analisis statistik aktivitas olahraga, streak konsistensi harian, dan grafik visualisasi progres Anda.</p>
+        </div>
+
+        <!-- Analytics Content Container -->
+        <div id="analytics-section-content">
+          <!-- Rendered dynamically by analytics.js -->
+        </div>
+      </div>
+    </section>
+
+    <!-- Section 4: Activity History Section -->
+    <section id="history" class="history-section">
+      <div class="container">
+        
+        <div class="history-header-meta">
+          <div>
+            <h2 style="font-size: 1.75rem; font-weight: 800;">Activity History</h2>
+            <p style="font-size: 0.875rem; color: var(--text-secondary);">Cari, filter, dan telusuri seluruh riwayat latihan olahraga Anda.</p>
+          </div>
+          <span id="history-result-counter" class="result-counter-badge">0 Activities Found</span>
+        </div>
+
+        <!-- Multi-Filter & Search Controls Bar -->
+        <div class="history-control-bar">
+          <div class="form-group" style="margin-bottom: 0;">
+            <input type="text" id="history-search" class="form-control" placeholder="🔍 Cari judul atau catatan..." aria-label="Cari judul atau catatan" />
+          </div>
+
+          <div class="form-group" style="margin-bottom: 0;">
+            <select id="history-filter-category" class="form-control" aria-label="Filter berdasarkan kategori">
+              <option value="all">Semua Kategori</option>
+              <option value="running">🏃 Lari</option>
+              <option value="cycling">🚴 Bersepeda</option>
+              <option value="walking">🚶 Jalan Kaki</option>
+              <option value="workout">🏋️ Workout</option>
+            </select>
+          </div>
+
+          <div class="form-group" style="margin-bottom: 0;">
+            <select id="history-filter-timerange" class="form-control" aria-label="Filter berdasarkan rentang waktu">
+              <option value="all">Semua Waktu (All Time)</option>
+              <option value="this-week">Minggu Ini (This Week)</option>
+              <option value="this-month">Bulan Ini (This Month)</option>
+            </select>
+          </div>
+
+          <div class="form-group" style="margin-bottom: 0;">
+            <select id="history-filter-sort" class="form-control" aria-label="Urutkan aktivitas">
+              <option value="newest">Terbaru (Newest)</option>
+              <option value="oldest">Terlama (Oldest)</option>
+              <option value="longest-duration">Durasi Terpanjang</option>
+              <option value="highest-distance">Jarak Terjauh</option>
+              <option value="most-calories">Kalori Terbanyak</option>
+            </select>
+          </div>
+        </div>
+
+        <!-- History Items Feed List -->
+        <div id="history-list-container" class="activities-list">
+          <!-- Dynamic rendering via history.js -->
+        </div>
+
+      </div>
+    </section>
+
+    <!-- Section 5: Settings & Data Management -->
+    <section id="settings" class="section-padding">
+      <div class="container">
+        <div class="section-header">
+          <span class="section-subtitle">Pengaturan & Data</span>
+          <h2 class="section-title">Application Settings</h2>
+          <p class="section-desc">Atur preferensi tampilan, satuan pengukuran, dan kelola data cadangan HabitPulse Anda.</p>
+        </div>
+
+        <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 1.5rem; max-width: 900px; margin: 0 auto;">
+          <!-- 1. Appearance Card -->
+          <div class="card">
+            <h3 style="font-size: 1.1rem; font-weight: 800; margin-bottom: 1rem; color: var(--text-primary);">Theme & Appearance</h3>
+            <p style="font-size: 0.85rem; color: var(--text-secondary); margin-bottom: 1rem;">Pilih tema warna visual HabitPulse.</p>
+            
+            <div style="display: flex; flex-direction: column; gap: 0.75rem;">
+              <label style="display: flex; align-items: center; gap: 0.75rem; cursor: pointer; font-size: 0.9rem;">
+                <input type="radio" name="setting-theme" value="dark" /> Dark Mode
+              </label>
+              <label style="display: flex; align-items: center; gap: 0.75rem; cursor: pointer; font-size: 0.9rem;">
+                <input type="radio" name="setting-theme" value="light" /> Light Mode
+              </label>
+              <label style="display: flex; align-items: center; gap: 0.75rem; cursor: pointer; font-size: 0.9rem;">
+                <input type="radio" name="setting-theme" value="system" /> System Default
+              </label>
+            </div>
+          </div>
+
+          <!-- 2. Unit Preference Card -->
+          <div class="card">
+            <h3 style="font-size: 1.1rem; font-weight: 800; margin-bottom: 1rem; color: var(--text-primary);">Unit Measurement</h3>
+            <p style="font-size: 0.85rem; color: var(--text-secondary); margin-bottom: 1rem;">Pilih satuan pengukuran jarak tempuh.</p>
+            
+            <div style="display: flex; flex-direction: column; gap: 0.75rem;">
+              <label style="display: flex; align-items: center; gap: 0.75rem; cursor: pointer; font-size: 0.9rem;">
+                <input type="radio" name="setting-unit" value="km" /> Kilometers (km)
+              </label>
+              <label style="display: flex; align-items: center; gap: 0.75rem; cursor: pointer; font-size: 0.9rem;">
+                <input type="radio" name="setting-unit" value="miles" /> Miles (mi)
+              </label>
+            </div>
+          </div>
+
+          <!-- 3. Data Management Card -->
+          <div class="card" style="grid-column: span 2;">
+            <h3 style="font-size: 1.1rem; font-weight: 800; margin-bottom: 1rem; color: var(--text-primary);">Data Management</h3>
+            <p style="font-size: 0.85rem; color: var(--text-secondary); margin-bottom: 1.25rem;">Cadangkan data ke file JSON, pulihkan data backup, atau hapus seluruh data secara aman.</p>
+            
+            <div style="display: flex; gap: 1rem; flex-wrap: wrap;">
+              <button id="btn-export-data" class="btn btn-secondary">
+                📥 Export Backup (JSON)
+              </button>
+
+              <button id="btn-import-data" class="btn btn-secondary">
+                📤 Import Backup (JSON)
+              </button>
+              <input type="file" id="file-input-import" accept=".json" style="display: none;" />
+
+              <button id="btn-trigger-clear-data" class="btn btn-danger" style="margin-left: auto;">
+                🗑️ Clear All Data
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <!-- Modal Component: Add / Edit Activity -->
+  <div id="modal-activity" class="modal-overlay" aria-hidden="true" role="dialog" aria-labelledby="modal-title">
+    <div class="modal-container">
+      <div class="modal-header">
+        <h2 id="modal-title" class="modal-title">Catat Aktivitas Baru</h2>
+        <button id="btn-close-modal" class="btn-icon" aria-label="Tutup Modal">✕</button>
+      </div>
+
+      <form id="form-activity" class="modal-body" novalidate>
+        <input type="hidden" id="activity-id" value="" />
+
+        <div id="group-type" class="form-group">
+          <label for="activity-type" class="form-label">Jenis Olahraga *</label>
+          <select id="activity-type" class="form-control" required>
+            <option value="running">Lari</option>
+            <option value="cycling">Bersepeda</option>
+            <option value="walking">Jalan Kaki</option>
+            <option value="workout">Workout</option>
+          </select>
+          <span id="error-type" class="form-error"></span>
+        </div>
+
+        <div id="group-title" class="form-group">
+          <label for="activity-title" class="form-label">Judul Aktivitas *</label>
+          <input type="text" id="activity-title" class="form-control" placeholder="Contoh: Lari Pagi Keliling Komplek" required />
+          <span id="error-title" class="form-error"></span>
+        </div>
+
+        <div id="group-date" class="form-group">
+          <label for="activity-date" class="form-label">Tanggal *</label>
+          <input type="date" id="activity-date" class="form-control" required />
+          <span id="error-date" class="form-error"></span>
+        </div>
+
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+          <div id="group-duration" class="form-group">
+            <label for="activity-duration" class="form-label">Durasi (Menit) *</label>
+            <input type="number" id="activity-duration" class="form-control" placeholder="30" min="1" step="1" required />
+            <span id="error-duration" class="form-error"></span>
+          </div>
+
+          <div id="group-distance" class="form-group">
+            <label for="activity-distance" class="form-label">Jarak (KM) *</label>
+            <input type="number" id="activity-distance" class="form-control" placeholder="5.0" min="0" step="0.01" />
+            <span id="error-distance" class="form-error"></span>
+          </div>
+        </div>
+
+        <div id="group-intensity" class="form-group">
+          <label for="activity-intensity" class="form-label">Intensitas Latihan</label>
+          <select id="activity-intensity" class="form-control">
+            <option value="light">Light (Ringan)</option>
+            <option value="moderate" selected>Moderate (Sedang)</option>
+            <option value="intense">Intense (Tinggi / Berat)</option>
+          </select>
+          <span id="error-intensity" class="form-error"></span>
+        </div>
+
+        <div id="group-calories" class="form-group">
+          <label for="activity-calories" class="form-label">Estimated Calories (kcal)</label>
+          <input type="number" id="activity-calories" class="form-control" placeholder="250" min="0" step="1" />
+          <span style="font-size: 0.72rem; color: var(--text-muted); margin-top: 0.25rem; display: block;">
+            * Estimated Calories: Estimated based on duration & intensity. Not medical diagnostic data.
+          </span>
+          <span id="error-calories" class="form-error"></span>
+        </div>
+
+        <div id="group-notes" class="form-group">
+          <label for="activity-notes" class="form-label">Catatan Tambahan</label>
+          <textarea id="activity-notes" class="form-control" rows="2" placeholder="Catatan kondisi fisik, rute, atau cuaca..."></textarea>
+        </div>
+
+        <div class="modal-footer" style="padding-left: 0; padding-right: 0; margin-top: 1rem;">
+          <button type="button" id="btn-cancel-modal" class="btn btn-secondary">Batal</button>
+          <button type="submit" id="btn-submit-form" class="btn btn-primary">Simpan Aktivitas</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Goal Settings Modal UI -->
+  <div id="modal-goal-settings" class="modal-overlay" aria-hidden="true" role="dialog" aria-labelledby="goal-modal-title">
+    <div class="modal-container" style="max-width: 440px;">
+      <div class="modal-header">
+        <h2 id="goal-modal-title" class="modal-title">Set Custom Weekly Goals</h2>
+        <button id="btn-close-goal-modal" class="btn-icon" aria-label="Tutup Modal">✕</button>
+      </div>
+
+      <form id="form-weekly-goals" class="modal-body">
+        <div class="form-group">
+          <label for="goal-target-activities" class="form-label">Target Activities per Week *</label>
+          <input type="number" id="goal-target-activities" class="form-control" min="1" max="50" step="1" required />
+        </div>
+
+        <div class="form-group">
+          <label for="goal-target-minutes" class="form-label">Target Active Minutes per Week *</label>
+          <input type="number" id="goal-target-minutes" class="form-control" min="10" max="2000" step="5" required />
+        </div>
+
+        <div class="form-group">
+          <label for="goal-target-distance" class="form-label">Target Distance (KM) per Week *</label>
+          <input type="number" id="goal-target-distance" class="form-control" min="1" max="500" step="0.5" required />
+        </div>
+
+        <div class="modal-footer" style="padding-left: 0; padding-right: 0; margin-top: 1rem;">
+          <button type="button" id="btn-cancel-goal-modal" class="btn btn-secondary">Batal</button>
+          <button type="submit" class="btn btn-primary">Simpan Goal</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Custom Clear All Data Modal UI -->
+  <div id="modal-clear-confirm" class="modal-overlay" aria-hidden="true" role="dialog" aria-labelledby="clear-modal-title">
+    <div class="modal-container" style="max-width: 440px;">
+      <div class="modal-header">
+        <h2 id="clear-modal-title" class="modal-title" style="color: var(--color-danger); display: flex; align-items: center; gap: 0.5rem;">
+          <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+          Hapus Seluruh Data?
+        </h2>
+        <button id="btn-close-clear-modal" class="btn-icon" aria-label="Tutup Modal">✕</button>
+      </div>
+
+      <div class="modal-body">
+        <p style="font-size: var(--font-size-sm); color: var(--text-secondary); line-height: 1.5;">
+          <strong>Peringatan Destruktif:</strong> Tindakan ini akan menghapus seluruh data aktivitas, rekor streak, dan target mingguan Anda dari browser ini secara permanen. Pastikan Anda telah meng-export backup JSON sebelum melanjutkan.
+        </p>
+      </div>
+
+      <div class="modal-footer">
+        <button type="button" id="btn-cancel-clear" class="btn btn-secondary">Batal</button>
+        <button type="button" id="btn-confirm-clear" class="btn btn-danger">Hapus Seluruh Data</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Custom Delete Confirmation Modal UI -->
+  <div id="modal-delete-confirm" class="modal-overlay" aria-hidden="true" role="dialog" aria-labelledby="delete-modal-title">
+    <div class="modal-container" style="max-width: 420px;">
+      <div class="modal-header">
+        <h2 id="delete-modal-title" class="modal-title" style="color: var(--color-danger); display: flex; align-items: center; gap: 0.5rem;">
+          <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+          Hapus Aktivitas
+        </h2>
+        <button id="btn-close-delete-modal" class="btn-icon" aria-label="Tutup Modal">✕</button>
+      </div>
+
+      <div class="modal-body">
+        <p style="font-size: var(--font-size-sm); color: var(--text-secondary); line-height: 1.5;">
+          Apakah Anda yakin ingin menghapus aktivitas ini? Data yang telah dihapus tidak dapat dikembalikan.
+        </p>
+      </div>
+
+      <div class="modal-footer">
+        <button type="button" id="btn-cancel-delete" class="btn btn-secondary">Batal</button>
+        <button type="button" id="btn-confirm-delete" class="btn btn-danger">Hapus Aktivitas</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Activity Detail View Modal UI -->
+  <div id="modal-activity-detail" class="modal-overlay" aria-hidden="true" role="dialog" aria-labelledby="detail-title">
+    <div class="modal-container" style="max-width: 540px;">
+      <div class="modal-header">
+        <div style="display: flex; align-items: center; gap: 0.75rem;">
+          <div id="detail-icon" style="width: 44px; height: 44px; border-radius: var(--radius-lg); background-color: var(--primary-soft); color: var(--primary); display: flex; align-items: center; justify-content: center;"></div>
+          <div>
+            <h2 id="detail-title" class="modal-title">Detail Aktivitas</h2>
+            <div style="display: flex; gap: 0.5rem; margin-top: 0.25rem;">
+              <span id="detail-type-badge" class="badge">Lari</span>
+              <span id="detail-intensity-badge" class="badge" style="background-color: var(--bg-subtle); color: var(--text-secondary);">Intensity: Moderate</span>
+            </div>
+          </div>
+        </div>
+        <button id="btn-close-detail-modal" class="btn-icon" aria-label="Tutup Modal">✕</button>
+      </div>
+
+      <div class="modal-body">
+        <div class="detail-grid">
+          <div class="detail-item">
+            <span id="detail-date">-</span>
+            <span>Tanggal</span>
+          </div>
+
+          <div class="detail-item">
+            <span id="detail-duration">-</span>
+            <span>Durasi Total</span>
+          </div>
+
+          <div class="detail-item">
+            <span id="detail-distance">-</span>
+            <span>Jarak Tempuh</span>
+          </div>
+
+          <div class="detail-item">
+            <span id="detail-calories">-</span>
+            <span>Estimated Calories</span>
+          </div>
+
+          <div class="detail-item" style="grid-column: span 2;">
+            <span id="detail-pace">-</span>
+            <span>Pace Rata-rata</span>
+          </div>
+        </div>
+
+        <div style="background-color: var(--bg-main); padding: 1rem; border-radius: var(--radius-lg); border: 1px solid var(--border-color);">
+          <strong style="display: block; font-size: var(--font-size-xs); font-weight: 700; color: var(--text-secondary); text-transform: uppercase; margin-bottom: 0.25rem;">Catatan Tambahan</strong>
+          <p id="detail-notes" style="font-size: var(--font-size-sm); color: var(--text-primary); line-height: 1.5; white-space: pre-wrap;">-</p>
+        </div>
+      </div>
+
+      <div class="modal-footer">
+        <button type="button" onclick="document.getElementById('modal-activity-detail').classList.remove('active')" class="btn btn-secondary">Tutup</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Toast Notification Container -->
+  <div id="toast-container" class="toast-container" aria-live="polite"></div>
+
+  <!-- Main Bundle Script -->
+  <script type="module" src="/src/main.js"></script>
+</body>
+</html>
