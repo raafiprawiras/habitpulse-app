@@ -1,0 +1,319 @@
+/* HabitPulse Responsive Design System — Milestone 10 Edition */
+
+/* Mobile Bottom Navigation Bar (< 768px) */
+.mobile-bottom-nav {
+  display: none;
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 64px;
+  background-color: var(--bg-surface);
+  border-top: 1px solid var(--border-color);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  z-index: var(--z-sticky);
+  justify-content: space-around;
+  align-items: center;
+  padding: 0 0.5rem;
+  box-shadow: 0 -4px 16px rgba(0, 0, 0, 0.06);
+}
+
+.mobile-bottom-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 0.2rem;
+  color: var(--text-secondary);
+  text-decoration: none;
+  font-size: 0.68rem;
+  font-weight: 700;
+  padding: 0.35rem 0.6rem;
+  border-radius: var(--radius-md);
+  transition: all var(--transition-fast);
+  touch-action: manipulation;
+  flex: 1;
+  text-align: center;
+}
+
+.mobile-bottom-item svg {
+  width: 20px;
+  height: 20px;
+}
+
+.mobile-bottom-item:hover,
+.mobile-bottom-item.active {
+  color: var(--primary);
+}
+
+.mobile-bottom-item.active svg {
+  stroke: var(--primary);
+}
+
+/* FAB Action Button in Bottom Nav */
+.mobile-bottom-fab {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 44px;
+  height: 44px;
+  border-radius: var(--radius-full);
+  background-color: var(--primary);
+  color: #FFFFFF;
+  border: none;
+  box-shadow: 0 4px 12px rgba(22, 163, 74, 0.35);
+  margin-top: -16px;
+  cursor: pointer;
+  touch-action: manipulation;
+}
+
+/* Desktop / Large Screens (>= 1440px) */
+@media (min-width: 1440px) {
+  .container {
+    max-width: 1280px;
+  }
+  .hero-title {
+    font-size: 3.5rem;
+  }
+}
+
+/* Laptop (1024px to 1439px) */
+@media (max-width: 1439px) and (min-width: 1024px) {
+  .hero-grid {
+    grid-template-columns: 1fr 1fr;
+    gap: var(--space-8);
+  }
+  .stats-8-grid {
+    grid-template-columns: repeat(4, 1fr);
+    gap: var(--space-4);
+  }
+  .breakdown-grid {
+    grid-template-columns: repeat(4, 1fr);
+    gap: var(--space-4);
+  }
+}
+
+/* Tablet (768px to 1023px) */
+@media (max-width: 1023px) and (min-width: 768px) {
+  .hero-grid {
+    grid-template-columns: 1fr;
+    gap: var(--space-8);
+    text-align: center;
+  }
+
+  .dashboard-top-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .stats-8-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .charts-grid {
+    grid-template-columns: 1fr !important;
+  }
+
+  .history-control-bar {
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .breakdown-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .hero-description {
+    margin-left: auto;
+    margin-right: auto;
+  }
+
+  .hero-cta {
+    justify-content: center;
+  }
+
+  .hero-stats-strip {
+    justify-content: center;
+  }
+
+  .activity-types-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: var(--space-4);
+  }
+
+  .features-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: var(--space-4);
+  }
+
+  .steps-grid {
+    grid-template-columns: 1fr;
+    gap: var(--space-6);
+  }
+
+  .benefits-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .footer-top {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
+/* Mobile Devices (< 768px: 320px, 360px, 375px, 390px, 430px) */
+@media (max-width: 767px) {
+  body {
+    padding-bottom: 74px; /* Space for fixed bottom navigation bar */
+    overflow-x: hidden;
+  }
+
+  .app-header {
+    height: 60px;
+  }
+
+  .nav-menu {
+    display: none;
+  }
+
+  .hamburger-btn {
+    display: flex;
+  }
+
+  .mobile-bottom-nav {
+    display: flex;
+  }
+
+  .dashboard-welcome-banner {
+    flex-direction: column;
+    align-items: flex-start;
+    padding: 1.25rem;
+  }
+
+  .dashboard-welcome-banner .btn {
+    width: 100%;
+  }
+
+  .dashboard-top-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .stats-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .stats-8-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .charts-grid {
+    grid-template-columns: 1fr !important;
+  }
+
+  .achievements-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .history-control-bar {
+    grid-template-columns: 1fr;
+  }
+
+  .breakdown-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .hero-section {
+    padding: 2rem 0 1.5rem;
+  }
+
+  .hero-grid {
+    grid-template-columns: 1fr;
+    gap: var(--space-6);
+    text-align: center;
+  }
+
+  .hero-title {
+    font-size: clamp(1.8rem, 7vw, 2.5rem);
+  }
+
+  .hero-description {
+    font-size: var(--font-size-base);
+    margin-left: auto;
+    margin-right: auto;
+  }
+
+  .hero-cta {
+    flex-direction: column;
+    width: 100%;
+  }
+
+  .hero-cta .btn {
+    width: 100%;
+  }
+
+  .hero-stats-strip {
+    flex-direction: column;
+    gap: var(--space-3);
+    align-items: center;
+  }
+
+  .activity-types-grid {
+    grid-template-columns: 1fr;
+    gap: var(--space-4);
+  }
+
+  .features-grid {
+    grid-template-columns: 1fr;
+    gap: var(--space-4);
+  }
+
+  .steps-grid {
+    grid-template-columns: 1fr;
+    gap: var(--space-6);
+  }
+
+  .benefits-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .cta-banner-card {
+    padding: 2rem 1rem;
+  }
+
+  .cta-banner-card h2 {
+    font-size: var(--font-size-xl);
+  }
+
+  .footer-top {
+    grid-template-columns: 1fr;
+    gap: var(--space-6);
+  }
+
+  .footer-bottom {
+    flex-direction: column;
+    text-align: center;
+  }
+
+  /* Activity card on small mobile */
+  .activity-card {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 1rem;
+  }
+
+  .activity-stats-row {
+    width: 100%;
+    justify-content: space-between;
+  }
+
+  .activity-actions {
+    margin-left: 0;
+  }
+
+  /* Modal body height limit on tiny screens (320px) */
+  .modal-container {
+    max-height: 85vh;
+  }
+
+  .modal-body {
+    max-height: calc(85vh - 120px);
+  }
+}

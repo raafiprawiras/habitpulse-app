@@ -1,0 +1,27 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 280 64" width="280" height="64">
+  <defs>
+    <linearGradient id="hp-logo-grad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#22C55E"/>
+      <stop offset="100%" stop-color="#16A34A"/>
+    </linearGradient>
+  </defs>
+
+  <!-- Logo Mark Container -->
+  <g transform="translate(4, 4)">
+    <rect width="56" height="56" rx="16" fill="url(#hp-logo-grad)"/>
+    <g fill="none" stroke="#FFFFFF" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M 28 46 C 13 36 9 26 14 18 C 18 11 25 13 28 17 C 31 13 38 11 42 18 C 47 26 43 36 28 46 Z" 
+            stroke="#FFFFFF" stroke-opacity="0.25" stroke-width="2.5"/>
+      <path d="M 10 28 L 18 28 L 22 18 L 27 38 L 32 14 L 37 32 L 40 24 L 43 27 M 39 24 L 43 24 L 43 28" 
+            stroke="#FFFFFF" stroke-width="3.8"/>
+    </g>
+  </g>
+
+  <!-- Brand Typography -->
+  <text x="72" y="38" font-family="'Plus Jakarta Sans', system-ui, -apple-system, sans-serif" font-weight="800" font-size="26" letter-spacing="-0.5" fill="currentColor">
+    Habit<tspan fill="#16A34A">Pulse</tspan>
+  </text>
+  <text x="73" y="52" font-family="'Plus Jakarta Sans', system-ui, -apple-system, sans-serif" font-weight="600" font-size="9" letter-spacing="0.4" fill="#64748B">
+    TRACK YOUR ACTIVITY. BUILD BETTER HABITS.
+  </text>
+</svg>
