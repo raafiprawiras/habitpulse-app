@@ -96,6 +96,9 @@
           </a>
         </div>
         <div class="top-header-actions">
+          <a href="#settings" class="btn-icon nav-link top-settings-btn" data-tab="settings" aria-label="Buka Pengaturan" title="Pengaturan">
+            <span id="top-icon-btn-settings"></span>
+          </a>
           <button class="btn-icon theme-toggle-btn" aria-label="Toggle Theme" title="Switch Light/Dark Mode"></button>
           <button class="btn btn-primary btn-trigger-modal">
             <span id="top-icon-btn-add"></span>
@@ -118,134 +121,109 @@
               <p>Ini ringkasan produktivitas olahragamu 7 hari terakhir.</p>
             </div>
             <button class="btn btn-primary btn-trigger-modal btn-header-cta">
-              <span id="icon-btn-add"></span>
               <span>+ Catat Aktivitas</span>
             </button>
           </div>
 
-          <!-- 4 Summary Metric Cards (1 Row Desktop) -->
+          <!-- Summary Metric Cards (4 Columns Desktop, 2x2 Mobile) -->
           <div class="summary-metrics-grid">
+            
+            <!-- Metric Card 1: Total Jarak -->
             <div class="metric-card">
-              <div class="metric-card-top">
-                <span class="metric-label">JARAK MINGGU INI</span>
-                <div id="icon-stat-distance" class="metric-icon"></div>
+              <div class="metric-card-header">
+                <span class="metric-icon-box" id="icon-stat-distance"></span>
+                <span class="metric-label">TOTAL JARAK</span>
               </div>
-              <div id="stat-total-distance" class="metric-value">0.00 km</div>
+              <div class="metric-value-container">
+                <h3 id="stat-total-distance" class="metric-value">0.0 km</h3>
+                <span class="metric-trend positive">7 hari terakhir</span>
+              </div>
             </div>
 
+            <!-- Metric Card 2: Menit Aktif -->
             <div class="metric-card">
-              <div class="metric-card-top">
-                <span class="metric-label">WAKTU AKTIF</span>
-                <div id="icon-stat-duration" class="metric-icon"></div>
+              <div class="metric-card-header">
+                <span class="metric-icon-box" id="icon-stat-duration"></span>
+                <span class="metric-label">MENIT AKTIF</span>
               </div>
-              <div id="stat-total-duration" class="metric-value">0m</div>
+              <div class="metric-value-container">
+                <h3 id="stat-total-duration" class="metric-value">0m</h3>
+                <span class="metric-trend positive">7 hari terakhir</span>
+              </div>
             </div>
 
+            <!-- Metric Card 3: Estimasi Kalori -->
             <div class="metric-card">
-              <div class="metric-card-top">
-                <span class="metric-label">KALORI TERBAKAR</span>
-                <div id="icon-stat-calories" class="metric-icon"></div>
+              <div class="metric-card-header">
+                <span class="metric-icon-box" id="icon-stat-calories"></span>
+                <span class="metric-label">ESTIMASI KALORI</span>
               </div>
-              <div id="stat-total-calories" class="metric-value">0 kcal</div>
+              <div class="metric-value-container">
+                <h3 id="stat-total-calories" class="metric-value">0 kcal</h3>
+                <span class="metric-trend neutral">7 hari terakhir</span>
+              </div>
             </div>
 
+            <!-- Metric Card 4: Total Sesi -->
             <div class="metric-card">
-              <div class="metric-card-top">
-                <span class="metric-label">TOTAL AKTIVITAS</span>
-                <div id="icon-stat-count" class="metric-icon"></div>
+              <div class="metric-card-header">
+                <span class="metric-icon-box" id="icon-stat-count"></span>
+                <span class="metric-label">TOTAL SESI</span>
               </div>
-              <div id="stat-total-count" class="metric-value">0 sesi</div>
+              <div class="metric-value-container">
+                <h3 id="stat-total-count" class="metric-value">0 sesi</h3>
+                <span class="metric-trend positive">7 hari terakhir</span>
+              </div>
             </div>
+
           </div>
 
-          <!-- Middle Section Grid: Daily Distance Chart (~2/3) & Weekly Target (~1/3) -->
-          <div class="dashboard-middle-grid">
+          <!-- Dashboard Charts & Target Grid -->
+          <div class="dashboard-main-grid">
             
-            <!-- Daily Distance Chart Panel -->
-            <div class="dashboard-card daily-distance-card">
-              <div class="dashboard-card-header">
-                <div>
-                  <h2 class="card-title">Jarak harian</h2>
-                  <p class="card-subtitle">7 hari terakhir</p>
-                </div>
-              </div>
-              <div id="daily-distance-chart-wrapper" class="chart-container">
-                <!-- Injected via JS dynamically -->
-              </div>
-            </div>
-
-            <!-- Weekly Target Card Panel -->
-            <div class="dashboard-card weekly-target-card">
+            <!-- Weekly Progress Donut Card -->
+            <div class="dashboard-card target-progress-card">
               <div class="dashboard-card-header">
                 <h2 class="card-title">Target Mingguan</h2>
-                <button id="btn-edit-goals" class="btn-icon btn-sm" title="Atur Target Mingguan">⚙️</button>
+                <a href="#achievements" class="view-all-link nav-link" data-tab="achievements">
+                  <span>Lihat Detail</span>
+                  <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
+                </a>
               </div>
-
-              <!-- Main Donut / Circle Progress -->
-              <div class="target-main-progress">
+              
+              <div class="target-card-content">
                 <div class="donut-chart-container">
-                  <svg class="donut-svg" viewBox="0 0 100 100">
-                    <circle class="donut-bg" cx="50" cy="50" r="40" />
-                    <circle id="donut-progress-circle" class="donut-fill" cx="50" cy="50" r="40" stroke-dasharray="251.2" stroke-dashoffset="251.2" />
+                  <svg class="donut-chart" viewBox="0 0 100 100">
+                    <circle class="donut-ring-bg" cx="50" cy="50" r="40" />
+                    <circle id="donut-progress-circle" class="donut-ring-fill" cx="50" cy="50" r="40" />
                   </svg>
                   <div class="donut-center-text">
-                    <strong id="target-main-value">0.0</strong>
-                    <span id="target-main-total">dari 20 km</span>
-                  </div>
-                </div>
-              </div>
-
-              <!-- Detailed Goal Sub-bars -->
-              <div class="target-sub-bars">
-                <!-- Sesi Goal -->
-                <div class="target-sub-item">
-                  <div class="target-sub-label">
-                    <span>Sesi</span>
-                    <strong id="weekly-goal-number">0 / 5</strong>
-                  </div>
-                  <div class="progress-bar-track">
-                    <div id="weekly-goal-fill" class="progress-bar-fill" style="width: 0%;"></div>
+                    <span id="target-main-value" class="donut-main-val">0.0</span>
+                    <span id="target-main-total" class="donut-sub-val">dari 20 km</span>
                   </div>
                 </div>
 
-                <!-- Menit Goal -->
-                <div class="target-sub-item">
-                  <div class="target-sub-label">
-                    <span>Menit</span>
-                    <strong id="goal-mins-number">0 / 150</strong>
+                <div class="target-metrics-list">
+                  <div class="target-metric-item">
+                    <div class="target-item-info">
+                      <span class="target-item-name">Target Sesi Olahraga</span>
+                      <strong id="weekly-goal-number" class="target-item-val">0 / 5</strong>
+                    </div>
+                    <div class="progress-bar-track">
+                      <div id="weekly-goal-fill" class="progress-bar-fill" style="width: 0%;"></div>
+                    </div>
                   </div>
-                  <div class="progress-bar-track">
-                    <div id="goal-mins-fill" class="progress-bar-fill" style="width: 0%;"></div>
-                  </div>
-                </div>
 
-                <!-- Kalori / Distance Goal -->
-                <div class="target-sub-item">
-                  <div class="target-sub-label">
-                    <span>Jarak</span>
-                    <strong id="goal-dist-number">0.0 / 20.0 km</strong>
-                  </div>
-                  <div class="progress-bar-track">
-                    <div id="goal-dist-fill" class="progress-bar-fill" style="width: 0%;"></div>
+                  <div class="target-metric-item">
+                    <div class="target-item-info">
+                      <span class="target-item-name">Menit Aktif Mingguan</span>
+                      <strong id="goal-mins-number" class="target-item-val">0 / 150</strong>
+                    </div>
+                    <div class="progress-bar-track">
+                      <div id="goal-mins-fill" class="progress-bar-fill" style="width: 0%;"></div>
+                    </div>
                   </div>
                 </div>
-              </div>
-            </div>
-          </div>
-
-          <!-- Bottom Section Grid: Minutes Per Day (~1/3) & Recent Activities (~2/3) -->
-          <div class="dashboard-bottom-grid">
-            
-            <!-- Minutes Per Day Chart Panel -->
-            <div class="dashboard-card minutes-per-day-card">
-              <div class="dashboard-card-header">
-                <div>
-                  <h2 class="card-title">Menit per hari</h2>
-                  <p class="card-subtitle">Waktu aktif 7 hari terakhir</p>
-                </div>
-              </div>
-              <div id="minutes-per-day-chart-wrapper" class="chart-container">
-                <!-- Injected via JS dynamically -->
               </div>
             </div>
 
@@ -401,70 +379,333 @@
       </div>
     </section>
 
-    <!-- Section 5: Settings & Data Management -->
-    <section id="settings" class="section-padding">
+    <!-- Section 5: Settings Control Center Section -->
+    <section id="settings" class="settings-section">
       <div class="container">
-        <div class="section-header">
-          <span class="section-subtitle">Pengaturan & Data</span>
-          <h2 class="section-title">Application Settings</h2>
-          <p class="section-desc">Atur preferensi tampilan, satuan pengukuran, dan kelola data cadangan HabitPulse Anda.</p>
-        </div>
-
-        <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 1.5rem; max-width: 900px; margin: 0 auto;">
-          <!-- 1. Appearance Card -->
-          <div class="card">
-            <h3 style="font-size: 1.1rem; font-weight: 800; margin-bottom: 1rem; color: var(--text-primary);">Theme & Appearance</h3>
-            <p style="font-size: 0.85rem; color: var(--text-secondary); margin-bottom: 1rem;">Pilih tema warna visual HabitPulse.</p>
-            
-            <div style="display: flex; flex-direction: column; gap: 0.75rem;">
-              <label style="display: flex; align-items: center; gap: 0.75rem; cursor: pointer; font-size: 0.9rem;">
-                <input type="radio" name="setting-theme" value="dark" /> Dark Mode
-              </label>
-              <label style="display: flex; align-items: center; gap: 0.75rem; cursor: pointer; font-size: 0.9rem;">
-                <input type="radio" name="setting-theme" value="light" /> Light Mode
-              </label>
-              <label style="display: flex; align-items: center; gap: 0.75rem; cursor: pointer; font-size: 0.9rem;">
-                <input type="radio" name="setting-theme" value="system" /> System Default
-              </label>
-            </div>
-          </div>
-
-          <!-- 2. Unit Preference Card -->
-          <div class="card">
-            <h3 style="font-size: 1.1rem; font-weight: 800; margin-bottom: 1rem; color: var(--text-primary);">Unit Measurement</h3>
-            <p style="font-size: 0.85rem; color: var(--text-secondary); margin-bottom: 1rem;">Pilih satuan pengukuran jarak tempuh.</p>
-            
-            <div style="display: flex; flex-direction: column; gap: 0.75rem;">
-              <label style="display: flex; align-items: center; gap: 0.75rem; cursor: pointer; font-size: 0.9rem;">
-                <input type="radio" name="setting-unit" value="km" /> Kilometers (km)
-              </label>
-              <label style="display: flex; align-items: center; gap: 0.75rem; cursor: pointer; font-size: 0.9rem;">
-                <input type="radio" name="setting-unit" value="miles" /> Miles (mi)
-              </label>
-            </div>
-          </div>
-
-          <!-- 3. Data Management Card -->
-          <div class="card" style="grid-column: span 2;">
-            <h3 style="font-size: 1.1rem; font-weight: 800; margin-bottom: 1rem; color: var(--text-primary);">Data Management</h3>
-            <p style="font-size: 0.85rem; color: var(--text-secondary); margin-bottom: 1.25rem;">Cadangkan data ke file JSON, pulihkan data backup, atau hapus seluruh data secara aman.</p>
-            
-            <div style="display: flex; gap: 1rem; flex-wrap: wrap;">
-              <button id="btn-export-data" class="btn btn-secondary">
-                📥 Export Backup (JSON)
-              </button>
-
-              <button id="btn-import-data" class="btn btn-secondary">
-                📤 Import Backup (JSON)
-              </button>
-              <input type="file" id="file-input-import" accept=".json" style="display: none;" />
-
-              <button id="btn-trigger-clear-data" class="btn btn-danger" style="margin-left: auto;">
-                🗑️ Clear All Data
-              </button>
-            </div>
+        
+        <!-- Settings Header Bar -->
+        <div class="settings-header-bar">
+          <div class="settings-header-text">
+            <h1 class="settings-title">Pengaturan</h1>
+            <p class="settings-subtitle">Pusat kendali dan kelola preferensi aplikasi HabitPulse kamu.</p>
           </div>
         </div>
+
+        <!-- Settings Groups Grid -->
+        <div class="settings-layout-container">
+          
+          <!-- 1. Profil & Personalisasi -->
+          <div class="settings-group-card">
+            <div class="settings-group-header">
+              <h2 class="settings-group-title">Profil & Personalisasi</h2>
+              <p class="settings-group-desc">Informasi yang hanya disimpan secara lokal pada browser perangkat ini.</p>
+            </div>
+
+            <div class="setting-row">
+              <div class="setting-row-info">
+                <label for="setting-display-name" class="setting-row-title">Nama Tampilan</label>
+                <p class="setting-row-desc">Nama pengguna yang ditampilkan pada salam pembuka Dashboard.</p>
+              </div>
+              <div class="setting-row-control">
+                <input type="text" id="setting-display-name" name="setting-display-name" class="form-control compact-input" placeholder="e.g. Raafi" maxlength="30" aria-label="Nama Tampilan" />
+              </div>
+            </div>
+
+            <div class="setting-row">
+              <div class="setting-row-info">
+                <label for="setting-default-activity" class="setting-row-title">Aktivitas Default</label>
+                <p class="setting-row-desc">Jenis olahraga yang otomatis terpilih saat mencatat aktivitas baru.</p>
+              </div>
+              <div class="setting-row-control">
+                <select id="setting-default-activity" name="setting-default-activity" class="form-control compact-select" aria-label="Aktivitas Default">
+                  <option value="running">Lari</option>
+                  <option value="cycling">Bersepeda</option>
+                  <option value="walking">Jalan Kaki</option>
+                  <option value="workout">Workout</option>
+                </select>
+              </div>
+            </div>
+          </div>
+
+          <!-- 2. Tampilan -->
+          <div class="settings-group-card">
+            <div class="settings-group-header">
+              <h2 class="settings-group-title">Tampilan</h2>
+              <p class="settings-group-desc">Kustomisasi mode tema visual dan kepadatan tata letak.</p>
+            </div>
+
+            <div class="setting-row">
+              <div class="setting-row-info">
+                <span class="setting-row-title">Tema Visual</span>
+                <p class="setting-row-desc">Mode Gelap (Dark), Terang (Light), atau ikuti setelan sistem OS (System).</p>
+              </div>
+              <div class="setting-row-control">
+                <div class="segmented-control settings-segmented">
+                  <button type="button" class="segmented-btn theme-btn" data-value="dark">Dark</button>
+                  <button type="button" class="segmented-btn theme-btn" data-value="light">Light</button>
+                  <button type="button" class="segmented-btn theme-btn" data-value="system">System</button>
+                </div>
+              </div>
+            </div>
+
+            <div class="setting-row">
+              <div class="setting-row-info">
+                <span class="setting-row-title">Kepadatan Tampilan</span>
+                <p class="setting-row-desc">Pilih tingkat kerapatan tata letak antar elemen di antarmuka.</p>
+              </div>
+              <div class="setting-row-control">
+                <div class="segmented-control settings-segmented">
+                  <button type="button" class="segmented-btn density-btn" data-value="comfortable">Nyaman</button>
+                  <button type="button" class="segmented-btn density-btn" data-value="compact">Ringkas</button>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- 3. Aktivitas & Satuan -->
+          <div class="settings-group-card">
+            <div class="settings-group-header">
+              <h2 class="settings-group-title">Aktivitas & Satuan</h2>
+              <p class="settings-group-desc">Pengukuran jarak, kalender mingguan, dan format penulisan waktu.</p>
+            </div>
+
+            <div class="setting-row">
+              <div class="setting-row-info">
+                <span class="setting-row-title">Satuan Jarak</span>
+                <p class="setting-row-desc">Kilometer (km) atau Miles (mi). Data disimpan presisi dalam kilometer.</p>
+              </div>
+              <div class="setting-row-control">
+                <div class="segmented-control settings-segmented">
+                  <button type="button" class="segmented-btn unit-btn" data-value="km">KM (km)</button>
+                  <button type="button" class="segmented-btn unit-btn" data-value="miles">Miles (mi)</button>
+                </div>
+              </div>
+            </div>
+
+            <div class="setting-row">
+              <div class="setting-row-info">
+                <label for="setting-week-start" class="setting-row-title">Awal Minggu</label>
+                <p class="setting-row-desc">Hari pertama untuk memulai akumulasi target mingguan.</p>
+              </div>
+              <div class="setting-row-control">
+                <select id="setting-week-start" name="setting-week-start" class="form-control compact-select" aria-label="Awal Minggu">
+                  <option value="monday">Senin</option>
+                  <option value="sunday">Minggu</option>
+                </select>
+              </div>
+            </div>
+
+            <div class="setting-row">
+              <div class="setting-row-info">
+                <label for="setting-time-format" class="setting-row-title">Format Waktu</label>
+                <p class="setting-row-desc">Sistem format jam yang ditampilkan pada riwayat aktivitas.</p>
+              </div>
+              <div class="setting-row-control">
+                <select id="setting-time-format" name="setting-time-format" class="form-control compact-select" aria-label="Format Waktu">
+                  <option value="24h">24 Jam (18:30)</option>
+                  <option value="12h">12 Jam (6:30 PM)</option>
+                </select>
+              </div>
+            </div>
+
+            <div class="setting-row">
+              <div class="setting-row-info">
+                <label for="setting-show-calories" class="setting-row-title">Tampilkan Estimasi Kalori</label>
+                <p class="setting-row-desc">Tampilkan nilai estimasi kalori yang terbakar di antarmuka utama.</p>
+              </div>
+              <div class="setting-row-control">
+                <label class="custom-toggle-switch">
+                  <input type="checkbox" id="setting-show-calories" name="setting-show-calories" />
+                  <span class="toggle-slider"></span>
+                </label>
+              </div>
+            </div>
+          </div>
+
+          <!-- 4. Target & Progress -->
+          <div class="settings-group-card">
+            <div class="settings-group-header">
+              <h2 class="settings-group-title">Target & Progress</h2>
+              <p class="settings-group-desc">Pengaturan komitmen target dan visibilitas lencana pencapaian.</p>
+            </div>
+
+            <div class="setting-row">
+              <div class="setting-row-info">
+                <span class="setting-row-title">Target Mingguan</span>
+                <p class="setting-row-desc">Atur target jarak, menit aktif, sesi, dan estimasi kalori mingguan.</p>
+              </div>
+              <div class="setting-row-control">
+                <a href="#achievements" class="btn btn-secondary btn-sm nav-link" data-tab="achievements">Kelola Target →</a>
+              </div>
+            </div>
+
+            <div class="setting-row">
+              <div class="setting-row-info">
+                <label for="setting-show-achievements" class="setting-row-title">Tampilkan Pencapaian</label>
+                <p class="setting-row-desc">Tampilkan sistem lencana pencapaian gamifikasi di aplikasi.</p>
+              </div>
+              <div class="setting-row-control">
+                <label class="custom-toggle-switch">
+                  <input type="checkbox" id="setting-show-achievements" name="setting-show-achievements" />
+                  <span class="toggle-slider"></span>
+                </label>
+              </div>
+            </div>
+          </div>
+
+          <!-- 5. Notifikasi Dalam Aplikasi -->
+          <div class="settings-group-card">
+            <div class="settings-group-header">
+              <h2 class="settings-group-title">Notifikasi Dalam Aplikasi</h2>
+              <p class="settings-group-desc">Atur pemberitahuan Toast internal aplikasi saat meraih progres.</p>
+            </div>
+
+            <div class="setting-row">
+              <div class="setting-row-info">
+                <label for="setting-notify-achievement" class="setting-row-title">Pencapaian Baru</label>
+                <p class="setting-row-desc">Tampilkan pesan saat lencana pencapaian baru berhasil dibuka.</p>
+              </div>
+              <div class="setting-row-control">
+                <label class="custom-toggle-switch">
+                  <input type="checkbox" id="setting-notify-achievement" name="setting-notify-achievement" />
+                  <span class="toggle-slider"></span>
+                </label>
+              </div>
+            </div>
+
+            <div class="setting-row">
+              <div class="setting-row-info">
+                <label for="setting-notify-weekly-goal" class="setting-row-title">Target Mingguan Tercapai</label>
+                <p class="setting-row-desc">Tampilkan pesan ketika berhasil menyelesaikan target mingguan.</p>
+              </div>
+              <div class="setting-row-control">
+                <label class="custom-toggle-switch">
+                  <input type="checkbox" id="setting-notify-weekly-goal" name="setting-notify-weekly-goal" />
+                  <span class="toggle-slider"></span>
+                </label>
+              </div>
+            </div>
+
+            <div class="setting-row">
+              <div class="setting-row-info">
+                <label for="setting-notify-streak" class="setting-row-title">Rekor Streak</label>
+                <p class="setting-row-desc">Tampilkan pesan selamat saat mempertahankan streak latihan.</p>
+              </div>
+              <div class="setting-row-control">
+                <label class="custom-toggle-switch">
+                  <input type="checkbox" id="setting-notify-streak" name="setting-notify-streak" />
+                  <span class="toggle-slider"></span>
+                </label>
+              </div>
+            </div>
+          </div>
+
+          <!-- 6. Aksesibilitas -->
+          <div class="settings-group-card">
+            <div class="settings-group-header">
+              <h2 class="settings-group-title">Aksesibilitas</h2>
+              <p class="settings-group-desc">Pengaturan kemudahan membaca dan pergerakan elemen antarmuka.</p>
+            </div>
+
+            <div class="setting-row">
+              <div class="setting-row-info">
+                <label for="setting-reduce-motion" class="setting-row-title">Pengurangan Gerakan (Reduce Motion)</label>
+                <p class="setting-row-desc">Minimalkan transisi dan animasi visual saat membuka atau memuat halaman.</p>
+              </div>
+              <div class="setting-row-control">
+                <select id="setting-reduce-motion" name="setting-reduce-motion" class="form-control compact-select" aria-label="Reduce Motion">
+                  <option value="system">System Default</option>
+                  <option value="on">Aktif (On)</option>
+                  <option value="off">Mati (Off)</option>
+                </select>
+              </div>
+            </div>
+
+            <div class="setting-row">
+              <div class="setting-row-info">
+                <label for="setting-text-size" class="setting-row-title">Ukuran Teks</label>
+                <p class="setting-row-desc">Sesuaikan skala tipografi dasar untuk kenyamanan membaca.</p>
+              </div>
+              <div class="setting-row-control">
+                <select id="setting-text-size" name="setting-text-size" class="form-control compact-select" aria-label="Ukuran Teks">
+                  <option value="normal">Normal</option>
+                  <option value="large">Besar</option>
+                </select>
+              </div>
+            </div>
+
+            <div class="setting-row">
+              <div class="setting-row-info">
+                <label for="setting-high-contrast" class="setting-row-title">Kontras Tinggi</label>
+                <p class="setting-row-desc">Pertegas garis tepi border dan kontras teks pada seluruh komponen UI.</p>
+              </div>
+              <div class="setting-row-control">
+                <label class="custom-toggle-switch">
+                  <input type="checkbox" id="setting-high-contrast" name="setting-high-contrast" />
+                  <span class="toggle-slider"></span>
+                </label>
+              </div>
+            </div>
+          </div>
+
+          <!-- 7. Data & Privasi -->
+          <div class="settings-group-card">
+            <div class="settings-group-header">
+              <h2 class="settings-group-title">Data & Privasi</h2>
+              <p class="settings-group-desc">Cadangan data JSON, pemulihan data, dan reset penyimpanan lokal.</p>
+            </div>
+
+            <div class="setting-row">
+              <div class="setting-row-info">
+                <span class="setting-row-title">Penyimpanan Data Lokal</span>
+                <p class="setting-row-desc">Seluruh data tersimpan aman di browser Anda (local-first). Gunakan Ekspor Data untuk mencadangkan.</p>
+              </div>
+              <div class="setting-row-control action-btns-row">
+                <button id="btn-export-data" class="btn btn-secondary btn-sm" title="Ekspor Data JSON">Ekspor Data</button>
+                <button id="btn-trigger-import-data" class="btn btn-secondary btn-sm" title="Impor Data JSON">Impor Data</button>
+                <input type="file" id="file-input-import" accept=".json" style="display: none;" />
+              </div>
+            </div>
+
+            <div class="setting-row">
+              <div class="setting-row-info">
+                <span class="setting-row-title">Reset Pengaturan</span>
+                <p class="setting-row-desc">Kembalikan seluruh preferensi ke setelan standar tanpa menghapus riwayat latihan.</p>
+              </div>
+              <div class="setting-row-control">
+                <button id="btn-trigger-reset-settings" class="btn btn-secondary btn-sm">Reset Pengaturan</button>
+              </div>
+            </div>
+
+            <!-- Danger Zone -->
+            <div class="setting-row danger-zone-row">
+              <div class="setting-row-info">
+                <span class="setting-row-title danger-text">Hapus Semua Data</span>
+                <p class="setting-row-desc">Menghapus seluruh aktivitas, target, pencapaian, dan pengaturan HabitPulse secara permanen dari perangkat ini.</p>
+              </div>
+              <div class="setting-row-control">
+                <button id="btn-trigger-clear-data" class="btn btn-danger btn-sm">Hapus Semua Data</button>
+              </div>
+            </div>
+          </div>
+
+          <!-- 8. Tentang HabitPulse -->
+          <div class="settings-group-card about-card">
+            <div class="about-app-brand">
+              <img src="/src/assets/logo/logo.svg" alt="HabitPulse Logo" class="about-logo-img" />
+              <div>
+                <h3 class="about-app-title">HabitPulse <span class="app-version-badge">v1.0.0</span></h3>
+                <p class="about-app-tagline">Track Your Activity. Build Better Habits.</p>
+              </div>
+            </div>
+            <div class="about-tech-notes">
+              <p>Dikembangkan dengan <strong>Vite.js</strong>, <strong>HTML5</strong>, <strong>CSS3</strong>, <strong>Vanilla JavaScript ES6+</strong>, dan <strong>LocalStorage</strong> (Local-First Architecture).</p>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </section>  </div>
       </div>
       </main>
     </div>
@@ -626,6 +867,52 @@
           <button type="submit" class="btn btn-primary btn-submit-activity">Simpan Target</button>
         </div>
       </form>
+    </div>
+  </div>
+
+  <!-- Custom Reset Settings Modal UI -->
+  <div id="modal-reset-settings-confirm" class="modal-overlay" aria-hidden="true" role="dialog" aria-labelledby="reset-modal-title">
+    <div class="modal-container" style="max-width: 440px;">
+      <div class="modal-header">
+        <h2 id="reset-modal-title" class="modal-title" style="display: flex; align-items: center; gap: 0.5rem;">
+          Reset Pengaturan Aplikasi?
+        </h2>
+        <button id="btn-close-reset-modal" class="btn-icon" aria-label="Tutup Modal">✕</button>
+      </div>
+
+      <div class="modal-body">
+        <p style="font-size: var(--font-size-sm); color: var(--color-text-secondary); line-height: 1.5;">
+          Tindakan ini akan mengembalikan seluruh preferensi profil, tema, satuan, dan notifikasi ke setelan bawaan. Riwayat aktivitas dan pencapaian Anda tetap aman.
+        </p>
+      </div>
+
+      <div class="modal-footer">
+        <button type="button" id="btn-cancel-reset-settings" class="btn btn-secondary">Batal</button>
+        <button type="button" id="btn-confirm-reset-settings" class="btn btn-primary btn-submit-activity">Reset Pengaturan</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Custom Import Confirmation Modal UI -->
+  <div id="modal-import-confirm" class="modal-overlay" aria-hidden="true" role="dialog" aria-labelledby="import-modal-title">
+    <div class="modal-container" style="max-width: 440px;">
+      <div class="modal-header">
+        <h2 id="import-modal-title" class="modal-title" style="display: flex; align-items: center; gap: 0.5rem;">
+          Impor Data HabitPulse?
+        </h2>
+        <button id="btn-close-import-modal" class="btn-icon" aria-label="Tutup Modal">✕</button>
+      </div>
+
+      <div class="modal-body">
+        <p style="font-size: var(--font-size-sm); color: var(--color-text-secondary); line-height: 1.5;">
+          Impor data backup JSON akan memperbarui riwayat aktivitas dan pengaturan aplikasi Anda. Lanjutkan proses impor?
+        </p>
+      </div>
+
+      <div class="modal-footer">
+        <button type="button" id="btn-cancel-import" class="btn btn-secondary">Batal</button>
+        <button type="button" id="btn-confirm-import" class="btn btn-primary btn-submit-activity">Impor Data</button>
+      </div>
     </div>
   </div>
 

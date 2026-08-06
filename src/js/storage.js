@@ -1,5 +1,5 @@
 /**
- * HabitPulse LocalStorage Wrapper Engine
+ * HabitPulse LocalStorage Wrapper Engine & Single Source of Truth
  */
 
 const STORAGE_KEYS = {
@@ -7,7 +7,7 @@ const STORAGE_KEYS = {
   THEME: 'habitpulse_theme',
   WEEKLY_GOALS: 'habitpulse_weekly_goals',
   UNITS: 'habitpulse_units',
-  USER_SETTINGS: 'habitpulse_user_settings',
+  SETTINGS: 'habitpulse_settings',
   UNLOCKED_ACHIEVEMENTS: 'habitpulse_unlocked_achievements'
 };
 
@@ -65,14 +65,63 @@ const DEFAULT_WEEKLY_GOALS = {
   targetCalories: 1500
 };
 
+export const DEFAULT_SETTINGS = {
+  profile: {
+    displayName: 'Athlete',
+    defaultActivity: 'running'
+  },
+  appearance: {
+    theme: 'system',
+    density: 'comfortable'
+  },
+  activity: {
+    unit: 'km',
+    numberFormat: 'id-ID',
+    weekStart: 'monday',
+    timeFormat: '24h',
+    showCalories: true
+  },
+  goals: {
+    showAchievements: true
+  },
+  notifications: {
+    notifyAchievement: true,
+    notifyWeeklyGoal: true,
+    notifyStreak: true
+  },
+  accessibility: {
+    reduceMotion: 'system',
+    textSize: 'normal',
+    highContrast: false
+  }
+};
+
+/**
+ * Deep merge source object into target object for default fallback
+ */
+function mergeDeep(target, source) {
+  const isObject = (item) => item && typeof item === 'object' && !Array.isArray(item);
+  const output = Object.assign({}, target);
+
+  if (isObject(target) && isObject(source)) {
+    Object.keys(source).forEach(key => {
+      if (isObject(source[key])) {
+        if (!(key in target)) {
+          Object.assign(output, { [key]: source[key] });
+        } else {
+          output[key] = mergeDeep(target[key], source[key]);
+        }
+      } else {
+        if (target[key] === undefined || target[key] === null) {
+          Object.assign(output, { [key]: source[key] });
+        }
+      }
+    });
+  }
+  return output;
+}
+
 export const StorageEngine = {
-  /**
-   * Safe getter from LocalStorage with corruption recovery
-   * @template T
-   * @param {string} key 
-   * @param {T} fallback 
-   * @returns {T}
-   */
   get(key, fallback = null) {
     try {
       const item = localStorage.getItem(key);
@@ -86,12 +135,6 @@ export const StorageEngine = {
     }
   },
 
-  /**
-   * Safe setter to LocalStorage
-   * @param {string} key 
-   * @param {any} value 
-   * @returns {boolean}
-   */
   set(key, value) {
     try {
       localStorage.setItem(key, JSON.stringify(value));
@@ -102,10 +145,6 @@ export const StorageEngine = {
     }
   },
 
-  /**
-   * Remove item key
-   * @param {string} key 
-   */
   remove(key) {
     try {
       localStorage.removeItem(key);
@@ -114,10 +153,6 @@ export const StorageEngine = {
     }
   },
 
-  /**
-   * Get all stored activities
-   * @returns {Array<Object>}
-   */
   getActivities() {
     const data = this.get(STORAGE_KEYS.ACTIVITIES, null);
     if (!data || !Array.isArray(data)) {
@@ -127,18 +162,10 @@ export const StorageEngine = {
     return data;
   },
 
-  /**
-   * Save activities list to LocalStorage
-   * @param {Array<Object>} activities 
-   */
   saveActivities(activities) {
     return this.set(STORAGE_KEYS.ACTIVITIES, activities);
   },
 
-  /**
-   * Get Weekly Goals configuration
-   * @returns {{targetActivities: number, targetMinutes: number, targetDistance: number, targetCalories: number}}
-   */
   getWeeklyGoals() {
     const goals = this.get(STORAGE_KEYS.WEEKLY_GOALS, null);
     if (!goals) {
@@ -153,10 +180,6 @@ export const StorageEngine = {
     };
   },
 
-  /**
-   * Save Weekly Goals configuration
-   * @param {Object} goals 
-   */
   saveWeeklyGoals(goals) {
     const updated = {
       targetActivities: Number(goals.targetActivities) || DEFAULT_WEEKLY_GOALS.targetActivities,
@@ -167,58 +190,79 @@ export const StorageEngine = {
     return this.set(STORAGE_KEYS.WEEKLY_GOALS, updated);
   },
 
-  /**
-   * Get unlocked achievements metadata map
-   * @returns {Object<string, {unlockedAt: string, notified: boolean}>}
-   */
   getUnlockedAchievements() {
     return this.get(STORAGE_KEYS.UNLOCKED_ACHIEVEMENTS, {}) || {};
   },
 
-  /**
-   * Save unlocked achievements metadata map
-   * @param {Object} map 
-   */
   saveUnlockedAchievements(map) {
     return this.set(STORAGE_KEYS.UNLOCKED_ACHIEVEMENTS, map);
   },
 
-  /**
-   * Get unit system preference ('km' | 'miles')
-   * @returns {string}
-   */
+  getSettings() {
+    const rawSettings = this.get(STORAGE_KEYS.SETTINGS, null);
+    
+    // Migrate legacy keys if settings key is missing
+    const legacyTheme = this.get(STORAGE_KEYS.THEME, null);
+    const legacyUnits = this.get(STORAGE_KEYS.UNITS, null);
+
+    const base = rawSettings || {};
+    if (legacyTheme && !base.appearance?.theme) {
+      base.appearance = base.appearance || {};
+      base.appearance.theme = legacyTheme;
+    }
+    if (legacyUnits && !base.activity?.unit) {
+      base.activity = base.activity || {};
+      base.activity.unit = legacyUnits;
+    }
+
+    const merged = mergeDeep(base, DEFAULT_SETTINGS);
+    if (!rawSettings) {
+      this.set(STORAGE_KEYS.SETTINGS, merged);
+    }
+    return merged;
+  },
+
+  saveSettings(settings) {
+    const merged = mergeDeep(settings, DEFAULT_SETTINGS);
+    this.set(STORAGE_KEYS.SETTINGS, merged);
+    // Sync legacy keys for backward compatibility
+    this.set(STORAGE_KEYS.THEME, merged.appearance.theme);
+    this.set(STORAGE_KEYS.UNITS, merged.activity.unit);
+    return merged;
+  },
+
+  updateSetting(category, key, value) {
+    const settings = this.getSettings();
+    if (!settings[category]) {
+      settings[category] = {};
+    }
+    settings[category][key] = value;
+    return this.saveSettings(settings);
+  },
+
+  resetSettings() {
+    this.set(STORAGE_KEYS.SETTINGS, DEFAULT_SETTINGS);
+    this.set(STORAGE_KEYS.THEME, DEFAULT_SETTINGS.appearance.theme);
+    this.set(STORAGE_KEYS.UNITS, DEFAULT_SETTINGS.activity.unit);
+    return DEFAULT_SETTINGS;
+  },
+
   getUnits() {
-    return this.get(STORAGE_KEYS.UNITS, 'km');
+    return this.getSettings().activity.unit || 'km';
   },
 
-  /**
-   * Save unit system preference
-   * @param {string} unit 'km' | 'miles'
-   */
   saveUnits(unit) {
-    return this.set(STORAGE_KEYS.UNITS, unit === 'miles' ? 'miles' : 'km');
+    return this.updateSetting('activity', 'unit', unit === 'miles' ? 'miles' : 'km');
   },
 
-  /**
-   * Get theme preference ('light' | 'dark' | 'system')
-   * @returns {string}
-   */
   getTheme() {
-    return this.get(STORAGE_KEYS.THEME, 'system');
+    return this.getSettings().appearance.theme || 'system';
   },
 
-  /**
-   * Save theme preference
-   * @param {string} theme 'light' | 'dark' | 'system'
-   */
   saveTheme(theme) {
-    return this.set(STORAGE_KEYS.THEME, theme);
+    return this.updateSetting('appearance', 'theme', theme);
   },
 
-  /**
-   * Export all HabitPulse data to JSON backup object
-   * @returns {Object}
-   */
   exportAllData() {
     return {
       appName: 'HabitPulse',
@@ -226,48 +270,43 @@ export const StorageEngine = {
       exportedAt: new Date().toISOString(),
       activities: this.getActivities(),
       weeklyGoals: this.getWeeklyGoals(),
-      units: this.getUnits(),
-      theme: this.getTheme()
+      settings: this.getSettings(),
+      unlockedAchievements: this.getUnlockedAchievements()
     };
   },
 
-  /**
-   * Validate and import JSON backup data
-   * @param {Object} importObj 
-   * @returns {{success: boolean, error?: string}}
-   */
   importData(importObj) {
     if (!importObj || typeof importObj !== 'object') {
-      return { success: false, error: 'File format invalid.' };
+      return { success: false, error: 'Format file JSON tidak valid.' };
     }
 
     if (!Array.isArray(importObj.activities)) {
-      return { success: false, error: 'No activities data array found in JSON file.' };
+      return { success: false, error: 'Data aktivitas tidak ditemukan dalam file backup.' };
     }
 
     try {
       this.saveActivities(importObj.activities);
       if (importObj.weeklyGoals) this.saveWeeklyGoals(importObj.weeklyGoals);
-      if (importObj.units) this.saveUnits(importObj.units);
-      if (importObj.theme) this.saveTheme(importObj.theme);
+      if (importObj.settings) this.saveSettings(importObj.settings);
+      if (importObj.unlockedAchievements) this.saveUnlockedAchievements(importObj.unlockedAchievements);
 
       return { success: true };
     } catch (e) {
-      return { success: false, error: e.message || 'Import failed.' };
+      return { success: false, error: e.message || 'Gagal memulihkan data.' };
     }
   },
 
-  /**
-   * Clear all stored data
-   */
   clearAllData() {
     try {
       localStorage.clear();
       this.set(STORAGE_KEYS.ACTIVITIES, []);
       this.set(STORAGE_KEYS.WEEKLY_GOALS, DEFAULT_WEEKLY_GOALS);
+      this.set(STORAGE_KEYS.SETTINGS, DEFAULT_SETTINGS);
+      this.set(STORAGE_KEYS.UNLOCKED_ACHIEVEMENTS, {});
       return true;
     } catch (e) {
       return false;
     }
   }
 };
+

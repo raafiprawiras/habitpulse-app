@@ -293,6 +293,63 @@ export const DashboardController = {
       }
     });
     this.renderRecentActivities();
+    const topIconBtnSettings = $('#top-icon-btn-settings');
+    if (topIconBtnSettings) topIconBtnSettings.innerHTML = Icons.settings('icon-md');
+    if (iconDist) iconDist.innerHTML = Icons.distance('icon-md');
+    if (iconDur) iconDur.innerHTML = Icons.duration('icon-md');
+    if (iconCal) iconCal.innerHTML = Icons.calories('icon-md');
+    if (iconCnt) iconCnt.innerHTML = Icons.trophy('icon-md');
+    if (topIconBtnAdd) topIconBtnAdd.innerHTML = Icons.plus('icon-sm');
+    if (iconBtnAdd) iconBtnAdd.innerHTML = Icons.plus('icon-sm');
+    if (iconCloseModal) iconCloseModal.innerHTML = Icons.close('icon-md');
+
+    // Sidebar Icons
+    const sbOverview = $('#sidebar-icon-overview');
+    const sbHistory = $('#sidebar-icon-history');
+    const sbStats = $('#sidebar-icon-statistics');
+    const sbAchieve = $('#sidebar-icon-achievements');
+    const sbSettings = $('#sidebar-icon-settings');
+    const sbStreak = $('#sidebar-streak-flame');
+
+    if (sbOverview) sbOverview.innerHTML = Icons.dashboard('icon-md');
+    if (sbHistory) sbHistory.innerHTML = Icons.activities('icon-md');
+    if (sbStats) sbStats.innerHTML = Icons.statistics('icon-md');
+    if (sbAchieve) sbAchieve.innerHTML = Icons.target('icon-md');
+    if (sbSettings) sbSettings.innerHTML = Icons.settings('icon-md');
+    if (sbStreak) sbStreak.innerHTML = Icons.flame('icon-md');
+
+    // Mobile Bottom Nav Icons
+    const mobOverview = $('#mobile-icon-overview');
+    const mobHistory = $('#mobile-icon-history');
+    const mobStats = $('#mobile-icon-statistics');
+    const mobAchieve = $('#mobile-icon-achievements');
+    const mobSettings = $('#mobile-icon-settings');
+    const mobFab = $('#mobile-fab-icon');
+
+    if (mobOverview) mobOverview.innerHTML = Icons.dashboard('icon-md');
+    if (mobHistory) mobHistory.innerHTML = Icons.activities('icon-md');
+    if (mobStats) mobStats.innerHTML = Icons.statistics('icon-md');
+    if (mobAchieve) mobAchieve.innerHTML = Icons.target('icon-md');
+    if (mobSettings) mobSettings.innerHTML = Icons.settings('icon-md');
+    if (mobFab) mobFab.innerHTML = Icons.plus('icon-lg');
+  },
+
+  bindNavigation() {
+    const navLinks = $$('.sidebar-link, .mobile-bottom-item, .nav-link');
+    
+    navLinks.forEach(link => {
+      link.addEventListener('click', (e) => {
+        const tab = link.dataset.tab;
+        if (tab) {
+          e.preventDefault();
+          this.switchTab(tab);
+        }
+      });
+    });
+
+    window.addEventListener('hashchange', () => {
+      this.handleInitialTab();
+    });
   },
 
   openActivityModal() {
@@ -311,7 +368,9 @@ export const DashboardController = {
     }
     this.isUserCaloriesTouched = false;
 
-    this.setSegmentedType('running');
+    const settings = StorageEngine.getSettings();
+    const defaultType = settings.profile?.defaultActivity || 'running';
+    this.setSegmentedType(defaultType);
 
     // Pre-fill datetime-local with current local time (YYYY-MM-DDTHH:mm)
     const dateInput = $('#activity-date');
@@ -448,35 +507,38 @@ export const DashboardController = {
       submitBtn.textContent = 'Menyimpan...';
     }
 
-    setTimeout(() => {
-      if (editId) {
-        ActivityManager.update(editId, formData);
-        this.closeActivityModal();
-        this.render();
-        this.showToast('Perubahan berhasil disimpan.', 'success');
-      } else {
-        ActivityManager.add(formData);
-        this.closeActivityModal();
-        this.render();
-        this.showToast('Aktivitas berhasil dicatat.', 'success');
-      }
-    }, 100);
+    let saved = false;
+    if (editId) {
+      saved = ActivityManager.update(editId, formData);
+    } else {
+      saved = ActivityManager.add(formData);
+    }
+
+    if (submitBtn) {
+      submitBtn.disabled = false;
+      submitBtn.textContent = editId ? 'Simpan perubahan' : 'Simpan aktivitas';
+    }
+
+    if (saved) {
+      this.closeActivityModal();
+      this.render();
+      this.showToast(editId ? 'Aktivitas berhasil diperbarui.' : 'Aktivitas berhasil ditambahkan.', 'success');
+    } else {
+      this.showToast('Gagal menyimpan aktivitas.', 'error');
+    }
   },
 
   render() {
     this.renderGreeting();
     this.renderStats();
-    this.renderDailyDistanceChart();
-    this.renderMinutesPerDayChart();
     this.renderRecentActivities();
-    
-    if (AnalyticsController && typeof AnalyticsController.render === 'function') {
-      AnalyticsController.render();
-    }
-    if (HistoryController && typeof HistoryController.render === 'function') {
+    if ($('#history').classList.contains('active')) {
       HistoryController.render();
     }
-    if (AchievementsController && typeof AchievementsController.render === 'function') {
+    if ($('#statistics').classList.contains('active')) {
+      AnalyticsController.render();
+    }
+    if ($('#achievements').classList.contains('active')) {
       AchievementsController.render();
     }
   },
@@ -484,8 +546,9 @@ export const DashboardController = {
   renderGreeting() {
     const greetingEl = $('#dashboard-greeting-title');
     if (greetingEl) {
-      const greeting = getGreetingByTime();
-      greetingEl.textContent = `${greeting}, Athlete!`;
+      const settings = StorageEngine.getSettings();
+      const name = settings.profile?.displayName || 'Athlete';
+      greetingEl.textContent = `Halo, ${name}`;
     }
   },
 

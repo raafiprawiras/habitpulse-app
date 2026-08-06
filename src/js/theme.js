@@ -7,9 +7,19 @@ export const ThemeManager = {
   currentTheme: 'system',
 
   init() {
-    this.currentTheme = StorageEngine.getTheme() || 'system';
-    this.applyTheme(this.currentTheme);
+    const settings = StorageEngine.getSettings();
+    this.currentTheme = settings.appearance.theme || 'system';
+    this.applyAllSettings(settings);
     this.listenToSystemChanges();
+  },
+
+  applyAllSettings(settings) {
+    const s = settings || StorageEngine.getSettings();
+    this.applyTheme(s.appearance.theme);
+    this.applyDensity(s.appearance.density);
+    this.applyReduceMotion(s.accessibility.reduceMotion);
+    this.applyTextSize(s.accessibility.textSize);
+    this.applyHighContrast(s.accessibility.highContrast);
   },
 
   applyTheme(theme) {
@@ -28,6 +38,28 @@ export const ThemeManager = {
     this.updateThemeToggleIcons();
   },
 
+  applyDensity(density) {
+    document.documentElement.setAttribute('data-density', density === 'compact' ? 'compact' : 'comfortable');
+  },
+
+  applyReduceMotion(reduceMotion) {
+    const root = document.documentElement;
+    if (reduceMotion === 'system') {
+      const prefersReduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+      root.setAttribute('data-reduce-motion', prefersReduced ? 'true' : 'false');
+    } else {
+      root.setAttribute('data-reduce-motion', reduceMotion === 'on' ? 'true' : 'false');
+    }
+  },
+
+  applyTextSize(textSize) {
+    document.documentElement.setAttribute('data-text-size', textSize === 'large' ? 'large' : 'normal');
+  },
+
+  applyHighContrast(highContrast) {
+    document.documentElement.setAttribute('data-high-contrast', highContrast ? 'true' : 'false');
+  },
+
   toggleTheme() {
     const activeEffective = document.documentElement.getAttribute('data-theme');
     const nextTheme = activeEffective === 'dark' ? 'light' : 'dark';
@@ -39,6 +71,13 @@ export const ThemeManager = {
       if (this.currentTheme === 'system') {
         document.documentElement.setAttribute('data-theme', e.matches ? 'dark' : 'light');
         this.updateThemeToggleIcons();
+      }
+    });
+
+    window.matchMedia('(prefers-reduced-motion: reduce)').addEventListener('change', (e) => {
+      const settings = StorageEngine.getSettings();
+      if (settings.accessibility.reduceMotion === 'system') {
+        document.documentElement.setAttribute('data-reduce-motion', e.matches ? 'true' : 'false');
       }
     });
   },
@@ -66,3 +105,4 @@ export const ThemeManager = {
     });
   }
 };
+
