@@ -158,11 +158,24 @@
     margin-left: auto;
   }
 
-  .breakdown-grid {
+  .history-control-bar {
     grid-template-columns: 1fr;
   }
 
-  .history-control-bar {
+  .history-header-bar {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .activity-summary-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .segmented-control {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .form-row-2col {
     grid-template-columns: 1fr;
   }
 

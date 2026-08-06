@@ -64,6 +64,14 @@ export const Validator = {
       }
     }
 
+    // Validate Heart Rate (Optional)
+    if (data.heartRate !== undefined && data.heartRate !== '') {
+      const hr = Number(data.heartRate);
+      if (isNaN(hr) || hr < 30 || hr > 240) {
+        errors.heartRate = 'Rata-rata HR harus antara 30 dan 240 bpm.';
+      }
+    }
+
     return {
       isValid: Object.keys(errors).length === 0,
       errors

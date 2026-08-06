@@ -304,51 +304,54 @@
     <section id="history" class="history-section">
       <div class="container">
         
-        <div class="history-header-meta">
-          <div>
-            <h2 style="font-size: 1.75rem; font-weight: 800;">Activity History</h2>
-            <p style="font-size: 0.875rem; color: var(--text-secondary);">Cari, filter, dan telusuri seluruh riwayat latihan olahraga Anda.</p>
+        <!-- Activity Page Header -->
+        <div class="history-header-bar">
+          <div class="history-header-text">
+            <h1 class="history-title">Aktivitas</h1>
+            <p class="history-subtitle">Semua sesi latihan yang pernah kamu catat.</p>
           </div>
-          <span id="history-result-counter" class="result-counter-badge">0 Activities Found</span>
+          <button class="btn btn-primary btn-trigger-modal btn-header-cta" title="Catat Aktivitas Baru">
+            <span>+ Catat Aktivitas</span>
+          </button>
         </div>
 
-        <!-- Multi-Filter & Search Controls Bar -->
-        <div class="history-control-bar">
-          <div class="form-group" style="margin-bottom: 0;">
-            <input type="text" id="history-search" class="form-control" placeholder="🔍 Cari judul atau catatan..." aria-label="Cari judul atau catatan" />
+        <!-- Search + Activity Filter Pills Toolbar -->
+        <div class="history-toolbar">
+          <div class="toolbar-search-wrapper">
+            <input type="text" id="history-search" class="form-control toolbar-search-input" placeholder="Cari sesi latihan..." aria-label="Cari sesi latihan" />
           </div>
 
-          <div class="form-group" style="margin-bottom: 0;">
-            <select id="history-filter-category" class="form-control" aria-label="Filter berdasarkan kategori">
-              <option value="all">Semua Kategori</option>
-              <option value="running">🏃 Lari</option>
-              <option value="cycling">🚴 Bersepeda</option>
-              <option value="walking">🚶 Jalan Kaki</option>
-              <option value="workout">🏋️ Workout</option>
-            </select>
+          <div class="toolbar-filter-pills" role="tablist" aria-label="Filter Jenis Olahraga">
+            <button class="filter-pill active" data-filter="all" role="tab" aria-selected="true">Semua</button>
+            <button class="filter-pill" data-filter="running" role="tab" aria-selected="false">Lari</button>
+            <button class="filter-pill" data-filter="cycling" role="tab" aria-selected="false">Bersepeda</button>
+            <button class="filter-pill" data-filter="walking" role="tab" aria-selected="false">Jalan Kaki</button>
+            <button class="filter-pill" data-filter="workout" role="tab" aria-selected="false">Workout</button>
           </div>
+        </div>
 
-          <div class="form-group" style="margin-bottom: 0;">
-            <select id="history-filter-timerange" class="form-control" aria-label="Filter berdasarkan rentang waktu">
-              <option value="all">Semua Waktu (All Time)</option>
-              <option value="this-week">Minggu Ini (This Week)</option>
-              <option value="this-month">Bulan Ini (This Month)</option>
-            </select>
+        <!-- Activity Summary Stat Cards (4 Columns Desktop, 2x2 Mobile) -->
+        <div class="activity-summary-grid">
+          <div class="summary-card">
+            <span class="summary-label">SESI</span>
+            <strong id="history-stat-sessions" class="summary-value">0</strong>
           </div>
-
-          <div class="form-group" style="margin-bottom: 0;">
-            <select id="history-filter-sort" class="form-control" aria-label="Urutkan aktivitas">
-              <option value="newest">Terbaru (Newest)</option>
-              <option value="oldest">Terlama (Oldest)</option>
-              <option value="longest-duration">Durasi Terpanjang</option>
-              <option value="highest-distance">Jarak Terjauh</option>
-              <option value="most-calories">Kalori Terbanyak</option>
-            </select>
+          <div class="summary-card">
+            <span class="summary-label">JARAK</span>
+            <strong id="history-stat-distance" class="summary-value">0.0 km</strong>
+          </div>
+          <div class="summary-card">
+            <span class="summary-label">MENIT</span>
+            <strong id="history-stat-duration" class="summary-value">0m</strong>
+          </div>
+          <div class="summary-card">
+            <span class="summary-label">KALORI</span>
+            <strong id="history-stat-calories" class="summary-value">0 kcal</strong>
           </div>
         </div>
 
         <!-- History Items Feed List -->
-        <div id="history-list-container" class="activities-list">
+        <div id="history-list-container" class="history-feed-list">
           <!-- Dynamic rendering via history.js -->
         </div>
 
@@ -451,81 +454,89 @@
     </a>
   </nav>
 
-  <!-- Modal Component: Add / Edit Activity -->
+  <!-- Modal Component: Add / Edit Activity (Single Card Modal) -->
   <div id="modal-activity" class="modal-overlay" aria-hidden="true" role="dialog" aria-labelledby="modal-title">
-    <div class="modal-container">
+    <div class="modal-container activity-modal-card">
       <div class="modal-header">
-        <h2 id="modal-title" class="modal-title">Catat Aktivitas Baru</h2>
+        <div>
+          <h2 id="modal-title" class="modal-title">Catat aktivitas baru</h2>
+          <p class="modal-subtitle">Rekam hasil latihanmu untuk memantau perkembangan fisik secara konsisten.</p>
+        </div>
         <button id="btn-close-modal" class="btn-icon" aria-label="Tutup Modal">✕</button>
       </div>
 
       <form id="form-activity" class="modal-body" novalidate>
         <input type="hidden" id="activity-id" value="" />
 
+        <!-- Jenis Olahraga Segmented Pills Control -->
         <div id="group-type" class="form-group">
-          <label for="activity-type" class="form-label">Jenis Olahraga *</label>
-          <select id="activity-type" class="form-control" required>
-            <option value="running">Lari</option>
-            <option value="cycling">Bersepeda</option>
-            <option value="walking">Jalan Kaki</option>
-            <option value="workout">Workout</option>
-          </select>
+          <label class="form-label">Jenis olahraga *</label>
+          <div class="segmented-control" id="activity-type-segmented" role="radiogroup" aria-label="Jenis Olahraga">
+            <button type="button" class="segmented-btn active" data-value="running" role="radio" aria-checked="true">Lari</button>
+            <button type="button" class="segmented-btn" data-value="cycling" role="radio" aria-checked="false">Bersepeda</button>
+            <button type="button" class="segmented-btn" data-value="walking" role="radio" aria-checked="false">Jalan Kaki</button>
+            <button type="button" class="segmented-btn" data-value="workout" role="radio" aria-checked="false">Workout</button>
+          </div>
+          <input type="hidden" id="activity-type" value="running" required />
           <span id="error-type" class="form-error"></span>
         </div>
 
+        <!-- Judul Sesi -->
         <div id="group-title" class="form-group">
-          <label for="activity-title" class="form-label">Judul Aktivitas *</label>
-          <input type="text" id="activity-title" class="form-control" placeholder="Contoh: Lari Pagi Keliling Komplek" required />
+          <label for="activity-title" class="form-label">Judul sesi *</label>
+          <input type="text" id="activity-title" class="form-control" placeholder="Contoh: Morning Tempo Run" required />
           <span id="error-title" class="form-error"></span>
         </div>
 
+        <!-- Waktu Sesi -->
         <div id="group-date" class="form-group">
-          <label for="activity-date" class="form-label">Tanggal *</label>
-          <input type="date" id="activity-date" class="form-control" required />
+          <label for="activity-date" class="form-label">Waktu sesi *</label>
+          <input type="datetime-local" id="activity-date" class="form-control" required />
           <span id="error-date" class="form-error"></span>
         </div>
 
-        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+        <!-- Short Field Row 1: Durasi & Jarak -->
+        <div class="form-row-2col">
           <div id="group-duration" class="form-group">
             <label for="activity-duration" class="form-label">Durasi (Menit) *</label>
-            <input type="number" id="activity-duration" class="form-control" placeholder="30" min="1" step="1" required />
+            <input type="number" id="activity-duration" class="form-control" placeholder="42" min="1" step="1" required />
             <span id="error-duration" class="form-error"></span>
           </div>
 
           <div id="group-distance" class="form-group">
             <label for="activity-distance" class="form-label">Jarak (KM) *</label>
-            <input type="number" id="activity-distance" class="form-control" placeholder="5.0" min="0" step="0.01" />
+            <input type="number" id="activity-distance" class="form-control" placeholder="8.2" min="0" step="0.01" />
             <span id="error-distance" class="form-error"></span>
           </div>
         </div>
 
-        <div id="group-intensity" class="form-group">
-          <label for="activity-intensity" class="form-label">Intensitas Latihan</label>
-          <select id="activity-intensity" class="form-control">
-            <option value="light">Light (Ringan)</option>
-            <option value="moderate" selected>Moderate (Sedang)</option>
-            <option value="intense">Intense (Tinggi / Berat)</option>
-          </select>
-          <span id="error-intensity" class="form-error"></span>
+        <!-- Short Field Row 2: Kalori & Rata-rata HR -->
+        <div class="form-row-2col">
+          <div id="group-calories" class="form-group">
+            <label for="activity-calories" class="form-label">Kalori (kcal)</label>
+            <input type="number" id="activity-calories" class="form-control" placeholder="612" min="0" step="1" />
+            <span id="error-calories" class="form-error"></span>
+          </div>
+
+          <div id="group-heart-rate" class="form-group">
+            <label for="activity-heart-rate" class="form-label">Rata-rata HR (bpm, Opsional)</label>
+            <input type="number" id="activity-heart-rate" class="form-control" placeholder="135" min="30" max="240" step="1" />
+            <span id="error-heart-rate" class="form-error"></span>
+          </div>
         </div>
 
-        <div id="group-calories" class="form-group">
-          <label for="activity-calories" class="form-label">Estimated Calories (kcal)</label>
-          <input type="number" id="activity-calories" class="form-control" placeholder="250" min="0" step="1" />
-          <span style="font-size: 0.72rem; color: var(--text-muted); margin-top: 0.25rem; display: block;">
-            * Estimated Calories: Estimated based on duration & intensity. Not medical diagnostic data.
-          </span>
-          <span id="error-calories" class="form-error"></span>
-        </div>
+        <!-- Hidden Intensity Selection (Defaults to moderate or derived) -->
+        <input type="hidden" id="activity-intensity" value="moderate" />
 
+        <!-- Catatan (Opsional) -->
         <div id="group-notes" class="form-group">
-          <label for="activity-notes" class="form-label">Catatan Tambahan</label>
-          <textarea id="activity-notes" class="form-control" rows="2" placeholder="Catatan kondisi fisik, rute, atau cuaca..."></textarea>
+          <label for="activity-notes" class="form-label">Catatan (Opsional)</label>
+          <textarea id="activity-notes" class="form-control compact-textarea" rows="2" placeholder="Catatan kondisi fisik, rute, atau cuaca..."></textarea>
         </div>
 
-        <div class="modal-footer" style="padding-left: 0; padding-right: 0; margin-top: 1rem;">
+        <div class="modal-footer">
           <button type="button" id="btn-cancel-modal" class="btn btn-secondary">Batal</button>
-          <button type="submit" id="btn-submit-form" class="btn btn-primary">Simpan Aktivitas</button>
+          <button type="submit" id="btn-submit-form" class="btn btn-primary btn-submit-activity">Simpan aktivitas</button>
         </div>
       </form>
     </div>

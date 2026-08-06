@@ -158,10 +158,8 @@ export const DashboardController = {
     const cancelModalBtn = $('#btn-cancel-modal');
     const modalOverlay = $('#modal-activity');
     const activityForm = $('#form-activity');
-    const activityTypeSelect = $('#activity-type');
     const durationInput = $('#activity-duration');
     const distanceInput = $('#activity-distance');
-    const intensitySelect = $('#activity-intensity');
     const caloriesInput = $('#activity-calories');
 
     const deleteModalOverlay = $('#modal-delete-confirm');
@@ -182,24 +180,17 @@ export const DashboardController = {
       });
     }
 
-    if (activityTypeSelect) {
-      activityTypeSelect.addEventListener('change', (e) => {
-        const distanceGroup = $('#group-distance');
-        if (distanceGroup) {
-          if (e.target.value === 'workout') {
-            distanceGroup.style.display = 'none';
-            if (distanceInput) distanceInput.value = '0';
-          } else {
-            distanceGroup.style.display = 'flex';
-          }
-        }
-        this.recalculateEstimatedCalories();
+    // Segmented Sport Type Selector
+    const segmentedBtns = $$('.segmented-btn');
+    segmentedBtns.forEach(btn => {
+      btn.addEventListener('click', (e) => {
+        const value = e.currentTarget.dataset.value;
+        this.setSegmentedType(value);
       });
-    }
+    });
 
     if (durationInput) durationInput.addEventListener('input', () => this.recalculateEstimatedCalories());
     if (distanceInput) distanceInput.addEventListener('input', () => this.recalculateEstimatedCalories());
-    if (intensitySelect) intensitySelect.addEventListener('change', () => this.recalculateEstimatedCalories());
     if (caloriesInput) {
       caloriesInput.addEventListener('input', () => {
         this.isUserCaloriesTouched = true;
@@ -249,6 +240,34 @@ export const DashboardController = {
     }
   },
 
+  setSegmentedType(typeValue) {
+    const hiddenTypeInput = $('#activity-type');
+    if (hiddenTypeInput) hiddenTypeInput.value = typeValue;
+
+    $$('.segmented-btn').forEach(btn => {
+      if (btn.dataset.value === typeValue) {
+        btn.classList.add('active');
+        btn.setAttribute('aria-checked', 'true');
+      } else {
+        btn.classList.remove('active');
+        btn.setAttribute('aria-checked', 'false');
+      }
+    });
+
+    const distanceGroup = $('#group-distance');
+    if (distanceGroup) {
+      if (typeValue === 'workout') {
+        distanceGroup.style.display = 'none';
+        const distInput = $('#activity-distance');
+        if (distInput) distInput.value = '0';
+      } else {
+        distanceGroup.style.display = 'flex';
+      }
+    }
+
+    this.recalculateEstimatedCalories();
+  },
+
   recalculateEstimatedCalories() {
     if (this.isUserCaloriesTouched) return;
 
@@ -285,17 +304,26 @@ export const DashboardController = {
 
     if (form) form.reset();
     if (idInput) idInput.value = '';
-    if (titleEl) titleEl.textContent = 'Catat Aktivitas Baru';
-    if (submitBtn) submitBtn.textContent = 'Simpan Aktivitas';
+    if (titleEl) titleEl.textContent = 'Catat aktivitas baru';
+    if (submitBtn) {
+      submitBtn.textContent = 'Simpan aktivitas';
+      submitBtn.disabled = false;
+    }
     this.isUserCaloriesTouched = false;
 
+    this.setSegmentedType('running');
+
+    // Pre-fill datetime-local with current local time (YYYY-MM-DDTHH:mm)
     const dateInput = $('#activity-date');
     if (dateInput) {
-      dateInput.value = new Date().toISOString().split('T')[0];
+      const now = new Date();
+      const year = now.getFullYear();
+      const month = String(now.getMonth() + 1).padStart(2, '0');
+      const day = String(now.getDate()).padStart(2, '0');
+      const hours = String(now.getHours()).padStart(2, '0');
+      const mins = String(now.getMinutes()).padStart(2, '0');
+      dateInput.value = `${year}-${month}-${day}T${hours}:${mins}`;
     }
-
-    const distanceGroup = $('#group-distance');
-    if (distanceGroup) distanceGroup.style.display = 'flex';
 
     this.clearFormErrors();
     if (modal) modal.classList.add('active');
@@ -309,25 +337,40 @@ export const DashboardController = {
     const titleEl = $('#modal-title');
     const submitBtn = $('#btn-submit-form');
 
-    if (titleEl) titleEl.textContent = 'Edit Aktivitas';
-    if (submitBtn) submitBtn.textContent = 'Perbarui Aktivitas';
+    if (titleEl) titleEl.textContent = 'Edit aktivitas';
+    if (submitBtn) {
+      submitBtn.textContent = 'Simpan perubahan';
+      submitBtn.disabled = false;
+    }
 
     $('#activity-id').value = activity.id;
-    $('#activity-type').value = activity.type;
+    this.setSegmentedType(activity.type || 'running');
     $('#activity-title').value = activity.title;
-    $('#activity-date').value = activity.date;
+
+    // Set datetime-local format
+    const dateInput = $('#activity-date');
+    if (dateInput && activity.date) {
+      const d = new Date(activity.date);
+      if (!isNaN(d.getTime())) {
+        const year = d.getFullYear();
+        const month = String(d.getMonth() + 1).padStart(2, '0');
+        const day = String(d.getDate()).padStart(2, '0');
+        const hours = String(d.getHours()).padStart(2, '0');
+        const mins = String(d.getMinutes()).padStart(2, '0');
+        dateInput.value = `${year}-${month}-${day}T${hours}:${mins}`;
+      } else {
+        dateInput.value = activity.date;
+      }
+    }
+
     $('#activity-duration').value = activity.duration;
     $('#activity-distance').value = activity.distance || 0;
-    $('#activity-intensity').value = activity.intensity || 'moderate';
+    if ($('#activity-intensity')) $('#activity-intensity').value = activity.intensity || 'moderate';
     $('#activity-calories').value = activity.calories || 0;
+    if ($('#activity-heart-rate')) $('#activity-heart-rate').value = activity.heartRate || '';
     $('#activity-notes').value = activity.notes || '';
 
     this.isUserCaloriesTouched = true;
-
-    const distanceGroup = $('#group-distance');
-    if (distanceGroup) {
-      distanceGroup.style.display = activity.type === 'workout' ? 'none' : 'flex';
-    }
 
     this.clearFormErrors();
     if (modal) modal.classList.add('active');
@@ -359,7 +402,7 @@ export const DashboardController = {
 
     if (deleted) {
       this.render();
-      this.showToast('Activity deleted', 'error');
+      this.showToast('Aktivitas berhasil dihapus.', 'error');
     }
   },
 
@@ -379,6 +422,7 @@ export const DashboardController = {
 
   handleFormSubmit() {
     const editId = $('#activity-id').value;
+    const submitBtn = $('#btn-submit-form');
 
     const formData = {
       type: $('#activity-type').value,
@@ -386,8 +430,9 @@ export const DashboardController = {
       date: $('#activity-date').value,
       duration: $('#activity-duration').value,
       distance: $('#activity-type').value === 'workout' ? 0 : $('#activity-distance').value,
-      intensity: $('#activity-intensity').value,
+      intensity: $('#activity-intensity') ? $('#activity-intensity').value : 'moderate',
       calories: $('#activity-calories').value,
+      heartRate: $('#activity-heart-rate') ? $('#activity-heart-rate').value : 0,
       notes: $('#activity-notes').value
     };
 
@@ -398,17 +443,24 @@ export const DashboardController = {
       return;
     }
 
-    if (editId) {
-      ActivityManager.update(editId, formData);
-      this.closeActivityModal();
-      this.render();
-      this.showToast('Activity updated', 'success');
-    } else {
-      ActivityManager.add(formData);
-      this.closeActivityModal();
-      this.render();
-      this.showToast('Activity added', 'success');
+    if (submitBtn) {
+      submitBtn.disabled = true;
+      submitBtn.textContent = 'Menyimpan...';
     }
+
+    setTimeout(() => {
+      if (editId) {
+        ActivityManager.update(editId, formData);
+        this.closeActivityModal();
+        this.render();
+        this.showToast('Perubahan berhasil disimpan.', 'success');
+      } else {
+        ActivityManager.add(formData);
+        this.closeActivityModal();
+        this.render();
+        this.showToast('Aktivitas berhasil dicatat.', 'success');
+      }
+    }, 100);
   },
 
   render() {

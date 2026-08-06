@@ -10,10 +10,9 @@ import { Icons } from './icons.js';
 export const HistoryController = {
   options: {
     category: 'all',
-    timeRange: 'all',
-    sortBy: 'newest',
     searchQuery: ''
   },
+  searchDebounceTimer: null,
 
   init() {
     this.bindEvents();
@@ -22,45 +21,26 @@ export const HistoryController = {
 
   bindEvents() {
     const searchInput = $('#history-search');
-    const categorySelect = $('#history-filter-category');
-    const timeRangeSelect = $('#history-filter-timerange');
-    const sortSelect = $('#history-filter-sort');
-    const clearFiltersBtn = $('#btn-clear-history-filters');
-
+    const filterPills = $$('.filter-pill');
     const closeDetailBtn = $('#btn-close-detail-modal');
     const detailModalOverlay = $('#modal-activity-detail');
 
     if (searchInput) {
       searchInput.addEventListener('input', (e) => {
-        this.options.searchQuery = e.target.value;
-        this.render();
+        clearTimeout(this.searchDebounceTimer);
+        this.searchDebounceTimer = setTimeout(() => {
+          this.options.searchQuery = e.target.value;
+          this.render();
+        }, 150);
       });
     }
 
-    if (categorySelect) {
-      categorySelect.addEventListener('change', (e) => {
-        this.options.category = e.target.value;
-        this.render();
+    filterPills.forEach(pill => {
+      pill.addEventListener('click', (e) => {
+        const filter = e.currentTarget.dataset.filter;
+        this.setFilter(filter);
       });
-    }
-
-    if (timeRangeSelect) {
-      timeRangeSelect.addEventListener('change', (e) => {
-        this.options.timeRange = e.target.value;
-        this.render();
-      });
-    }
-
-    if (sortSelect) {
-      sortSelect.addEventListener('change', (e) => {
-        this.options.sortBy = e.target.value;
-        this.render();
-      });
-    }
-
-    if (clearFiltersBtn) {
-      clearFiltersBtn.addEventListener('click', () => this.resetFilters());
-    }
+    });
 
     if (closeDetailBtn) {
       closeDetailBtn.addEventListener('click', () => this.closeDetailModal());
@@ -93,24 +73,17 @@ export const HistoryController = {
     }
   },
 
-  resetFilters() {
-    this.options = {
-      category: 'all',
-      timeRange: 'all',
-      sortBy: 'newest',
-      searchQuery: ''
-    };
-
-    const searchInput = $('#history-search');
-    const categorySelect = $('#history-filter-category');
-    const timeRangeSelect = $('#history-filter-timerange');
-    const sortSelect = $('#history-filter-sort');
-
-    if (searchInput) searchInput.value = '';
-    if (categorySelect) categorySelect.value = 'all';
-    if (timeRangeSelect) timeRangeSelect.value = 'all';
-    if (sortSelect) sortSelect.value = 'newest';
-
+  setFilter(filterCategory) {
+    this.options.category = filterCategory;
+    $$('.filter-pill').forEach(pill => {
+      if (pill.dataset.filter === filterCategory) {
+        pill.classList.add('active');
+        pill.setAttribute('aria-selected', 'true');
+      } else {
+        pill.classList.remove('active');
+        pill.setAttribute('aria-selected', 'false');
+      }
+    });
     this.render();
   },
 
@@ -152,16 +125,16 @@ export const HistoryController = {
       typeEl.className = `badge badge-${activity.type}`;
     }
     if (intensityEl) {
-      intensityEl.textContent = `Intensity: ${activity.intensity || 'moderate'}`;
+      intensityEl.textContent = activity.heartRate > 0 ? `HR: ${activity.heartRate} bpm` : `Intensity: ${activity.intensity || 'moderate'}`;
     }
     if (dateEl) dateEl.textContent = formatDate(activity.date);
     if (durationEl) durationEl.textContent = formatDuration(activity.duration);
-    if (distanceEl) distanceEl.textContent = activity.distance > 0 ? formatDistance(activity.distance, unit) : '-';
-    if (caloriesEl) caloriesEl.textContent = activity.calories > 0 ? `${activity.calories} kcal` : '-';
+    if (distanceEl) distanceEl.textContent = activity.distance > 0 ? formatDistance(activity.distance, unit) : '—';
+    if (caloriesEl) caloriesEl.textContent = activity.calories > 0 ? `${activity.calories} kcal` : '—';
 
     const pace = (activity.type === 'running' || activity.type === 'walking' || activity.type === 'cycling')
       ? calculatePace(activity.duration, activity.distance, unit)
-      : '-';
+      : '—';
     if (paceEl) paceEl.textContent = pace;
 
     if (notesEl) notesEl.textContent = activity.notes || 'Tidak ada catatan tambahan.';
@@ -176,39 +149,63 @@ export const HistoryController = {
 
   render() {
     const container = $('#history-list-container');
-    const counterEl = $('#history-result-counter');
     if (!container) return;
 
-    const activities = ActivityManager.query(this.options);
+    const activities = ActivityManager.query({
+      category: this.options.category,
+      searchQuery: this.options.searchQuery,
+      sortBy: 'newest'
+    });
     const unit = StorageEngine.getUnits();
 
-    if (counterEl) {
-      const count = activities.length;
-      counterEl.textContent = `${count} ${count === 1 ? 'Activity' : 'Activities'} Found`;
-    }
+    // Render Summary Cards
+    let totalSessions = activities.length;
+    let totalDistanceKm = 0;
+    let totalDurationMins = 0;
+    let totalCalories = 0;
 
+    activities.forEach(act => {
+      totalDistanceKm += (Number(act.distance) || 0);
+      totalDurationMins += (Number(act.duration) || 0);
+      totalCalories += (Number(act.calories) || 0);
+    });
+
+    const elSessions = $('#history-stat-sessions');
+    const elDistance = $('#history-stat-distance');
+    const elDuration = $('#history-stat-duration');
+    const elCalories = $('#history-stat-calories');
+
+    if (elSessions) elSessions.textContent = totalSessions.toString();
+    if (elDistance) elDistance.textContent = formatDistance(totalDistanceKm, unit);
+    if (elDuration) elDuration.textContent = formatDuration(totalDurationMins);
+    if (elCalories) elCalories.textContent = `${totalCalories.toLocaleString()} kcal`;
+
+    // Empty state
     if (activities.length === 0) {
+      const isFiltered = this.options.searchQuery.trim() !== '' || this.options.category !== 'all';
       container.innerHTML = `
         <div class="empty-state">
           <div class="empty-icon">${Icons.pulse('icon-xl')}</div>
-          <h3 class="empty-title">No matching activities found</h3>
-          <p class="empty-desc">Try adjusting your search terms or filters to find what you're looking for.</p>
-          <button id="btn-clear-history-filters" class="btn btn-secondary">
-            Reset Filters
+          <h3 class="empty-title">${isFiltered ? 'Tidak ada aktivitas yang cocok dengan pencarian.' : 'Belum ada aktivitas'}</h3>
+          <p class="empty-desc">${isFiltered ? 'Coba ubah kata kunci pencarian atau filter jenis olahraga.' : 'Catat sesi pertamamu dan mulai pantau progres.'}</p>
+          <button class="btn btn-primary btn-trigger-modal">
+            ${Icons.plus('icon-sm')} Catat Aktivitas
           </button>
         </div>
       `;
 
-      const resetBtn = $('#btn-clear-history-filters');
-      if (resetBtn) resetBtn.addEventListener('click', () => this.resetFilters());
+      const btnAdd = container.querySelector('.btn-trigger-modal');
+      if (btnAdd) {
+        btnAdd.addEventListener('click', () => DashboardController.openActivityModal());
+      }
       return;
     }
 
     const typeIcons = {
-      running: Icons.running('icon-lg'),
-      cycling: Icons.cycling('icon-lg'),
-      walking: Icons.walking('icon-lg'),
-      workout: Icons.workout('icon-lg')
+      running: Icons.running('icon-md'),
+      cycling: Icons.cycling('icon-md'),
+      walking: Icons.walking('icon-md'),
+      workout: Icons.workout('icon-md')
     };
 
     const typeNames = {
@@ -219,56 +216,59 @@ export const HistoryController = {
     };
 
     container.innerHTML = activities.map(act => {
-      const icon = typeIcons[act.type] || Icons.pulse('icon-lg');
+      const icon = typeIcons[act.type] || Icons.pulse('icon-md');
       const typeName = typeNames[act.type] || act.type;
-      const pace = act.type === 'running' || act.type === 'walking' || act.type === 'cycling'
-        ? calculatePace(act.duration, act.distance, unit)
-        : '-';
+
+      // Extract Date & Time
+      let timeStr = '';
+      if (act.date) {
+        const d = new Date(act.date);
+        if (!isNaN(d.getTime())) {
+          const hours = String(d.getHours()).padStart(2, '0');
+          const mins = String(d.getMinutes()).padStart(2, '0');
+          timeStr = ` · ${hours}:${mins}`;
+        }
+      }
 
       return `
-        <article class="activity-card card-hover" data-id="${act.id}">
-          <div class="activity-main-info">
-            <div class="activity-avatar badge-${act.type}">
+        <article class="activity-row" data-id="${act.id}">
+          <div class="activity-row-main">
+            <div class="activity-row-icon ${act.type}">
               ${icon}
             </div>
-            <div class="activity-title-block">
-              <h3>${escapeHTML(act.title)}</h3>
-              <div class="activity-meta">
-                <span class="badge badge-${act.type}">${typeName}</span>
-                <span class="meta-item">${Icons.calendar('icon-sm')} ${formatDate(act.date)}</span>
-                ${act.intensity ? `<span class="badge" style="background-color: var(--bg-subtle); color: var(--text-secondary); text-transform: capitalize;">${act.intensity}</span>` : ''}
+            <div class="activity-row-info">
+              <h4>${escapeHTML(act.title)}</h4>
+              <div class="activity-row-meta">
+                <span>${typeName}</span> · <span>${formatDate(act.date)}${timeStr}</span>
+                ${act.heartRate > 0 ? `<span style="margin-left: 0.35rem; color: var(--color-primary); font-weight: 700;">❤️ ${act.heartRate} bpm</span>` : ''}
               </div>
             </div>
           </div>
 
-          <div class="activity-stats-row">
-            ${act.distance > 0 ? `
-              <div class="stat-item-inline">
-                <strong>${formatDistance(act.distance, unit)}</strong>
-                <span>Jarak</span>
-              </div>
-            ` : ''}
+          <div class="activity-row-metrics">
+            <div class="activity-row-stat">
+              <strong>${act.type === 'workout' && !act.distance ? '—' : formatDistance(act.distance, unit)}</strong>
+              <span>Jarak</span>
+            </div>
 
-            <div class="stat-item-inline">
+            <div class="activity-row-stat">
               <strong>${formatDuration(act.duration)}</strong>
               <span>Durasi</span>
             </div>
 
-            ${act.calories > 0 ? `
-              <div class="stat-item-inline">
-                <strong>${act.calories} kcal</strong>
-                <span>Kalori (Est.)</span>
-              </div>
-            ` : ''}
+            <div class="activity-row-stat">
+              <strong>${act.calories > 0 ? `${act.calories} kcal` : '—'}</strong>
+              <span>Kalori (Est.)</span>
+            </div>
 
-            <div class="activity-actions">
-              <button class="btn-icon btn-view-activity" data-id="${act.id}" title="View Details" aria-label="View Details">
-                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M2 12s3-7 10-7 10 7 10 7-3 7-10 7-10-7-10-7Z"/><circle cx="12" cy="12" r="3"/></svg>
+            <div class="activity-row-actions">
+              <button class="btn-icon btn-edit-activity" data-id="${act.id}" title="Edit Aktivitas" aria-label="Edit aktivitas">
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M12 20h9"></path>
+                  <path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"></path>
+                </svg>
               </button>
-              <button class="btn-icon btn-edit-activity" data-id="${act.id}" title="Edit Aktivitas" aria-label="Edit Aktivitas">
-                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/></svg>
-              </button>
-              <button class="btn-icon btn-delete-activity" data-id="${act.id}" title="Hapus Aktivitas" aria-label="Hapus Aktivitas">
+              <button class="btn-icon btn-delete-activity" data-id="${act.id}" title="Hapus Aktivitas" aria-label="Hapus aktivitas">
                 ${Icons.trash('icon-sm')}
               </button>
             </div>

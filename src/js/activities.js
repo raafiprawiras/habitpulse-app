@@ -118,6 +118,7 @@ export const ActivityManager = {
       distance: Number(activityData.distance) || 0,
       intensity: activityData.intensity || 'moderate',
       calories: Number(activityData.calories) || 0,
+      heartRate: Number(activityData.heartRate) || 0,
       notes: (activityData.notes || '').trim(),
       createdAt: new Date().toISOString()
     };
@@ -148,6 +149,7 @@ export const ActivityManager = {
       distance: Number(updatedData.distance) || 0,
       intensity: updatedData.intensity || existing.intensity || 'moderate',
       calories: Number(updatedData.calories) || 0,
+      heartRate: Number(updatedData.heartRate) || 0,
       notes: (updatedData.notes !== undefined ? updatedData.notes : existing.notes).trim(),
       updatedAt: new Date().toISOString()
     };
