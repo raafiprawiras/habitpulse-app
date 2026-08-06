@@ -64,12 +64,9 @@
           <span class="sidebar-icon" id="sidebar-icon-achievements"></span>
           <span>Target</span>
         </a>
-
-        <div class="sidebar-divider"></div>
-
-        <a href="#settings" class="sidebar-link sidebar-utility-link" data-tab="settings">
+        <a href="#settings" class="sidebar-link" data-tab="settings">
           <span class="sidebar-icon" id="sidebar-icon-settings"></span>
-          <span>Pengaturan</span>
+          <span>Settings</span>
         </a>
       </nav>
 
@@ -426,138 +423,132 @@
 
     <!-- Section 5: Settings Control Center Section -->
     <section id="settings" class="settings-section">
-      <div class="container">
+      <!-- Settings Header Bar -->
+      <div class="settings-header-bar">
+        <div class="settings-header-text">
+          <h1 class="settings-title">Pengaturan</h1>
+          <p class="settings-subtitle">Kelola preferensi profil, tampilan, aktivitas, dan data HabitPulse.</p>
+        </div>
+      </div>
+
+      <!-- Clean Settings Panel Layout -->
+      <div class="settings-panel-card">
         
-        <!-- Settings Header Bar -->
-        <div class="settings-header-bar">
-          <div class="settings-header-text">
-            <h1 class="settings-title">Pengaturan</h1>
-            <p class="settings-subtitle">Kelola preferensi profil, tampilan, aktivitas, dan data HabitPulse.</p>
-          </div>
-        </div>
-
-        <!-- Clean Settings Panel Layout -->
-        <div class="settings-panel-card">
+        <!-- Section 1: Profil -->
+        <div class="settings-group">
+          <h2 class="settings-group-title">Profil</h2>
           
-          <!-- Section 1: Profil -->
-          <div class="settings-group">
-            <h2 class="settings-group-title">Profil</h2>
-            
-            <div class="setting-row">
-              <div class="setting-row-info">
-                <label for="setting-display-name" class="setting-row-title">Nama Tampilan</label>
-                <p class="setting-row-desc">Nama pengguna yang ditampilkan pada salam pembuka Dashboard.</p>
-              </div>
-              <div class="setting-row-control">
-                <input type="text" id="setting-display-name" name="setting-display-name" class="form-control compact-input" placeholder="Raafi" maxlength="30" aria-label="Nama Tampilan" />
+          <div class="setting-row">
+            <div class="setting-row-info">
+              <label for="setting-display-name" class="setting-row-title">Nama Tampilan</label>
+              <p class="setting-row-desc">Nama pengguna yang ditampilkan pada salam pembuka Dashboard.</p>
+            </div>
+            <div class="setting-row-control">
+              <input type="text" id="setting-display-name" name="setting-display-name" class="form-control compact-input" placeholder="Raafi" maxlength="30" aria-label="Nama Tampilan" />
+            </div>
+          </div>
+        </div>
+
+        <div class="settings-divider"></div>
+
+        <!-- Section 2: Tampilan -->
+        <div class="settings-group">
+          <h2 class="settings-group-title">Tampilan</h2>
+
+          <div class="setting-row">
+            <div class="setting-row-info">
+              <span class="setting-row-title">Tema</span>
+              <p class="setting-row-desc">Mode Gelap (Dark), Terang (Light), atau ikuti setelan sistem OS (System).</p>
+            </div>
+            <div class="setting-row-control">
+              <div class="segmented-control settings-segmented">
+                <button type="button" class="segmented-btn theme-btn" data-value="dark">Dark</button>
+                <button type="button" class="segmented-btn theme-btn" data-value="light">Light</button>
+                <button type="button" class="segmented-btn theme-btn" data-value="system">System</button>
               </div>
             </div>
           </div>
+        </div>
 
-          <div class="settings-divider"></div>
+        <div class="settings-divider"></div>
 
-          <!-- Section 2: Tampilan -->
-          <div class="settings-group">
-            <h2 class="settings-group-title">Tampilan</h2>
+        <!-- Section 3: Preferensi Aktivitas -->
+        <div class="settings-group">
+          <h2 class="settings-group-title">Preferensi Aktivitas</h2>
 
-            <div class="setting-row">
-              <div class="setting-row-info">
-                <span class="setting-row-title">Tema</span>
-                <p class="setting-row-desc">Mode Gelap (Dark), Terang (Light), atau ikuti setelan sistem OS (System).</p>
-              </div>
-              <div class="setting-row-control">
-                <div class="segmented-control settings-segmented">
-                  <button type="button" class="segmented-btn theme-btn" data-value="dark">Dark</button>
-                  <button type="button" class="segmented-btn theme-btn" data-value="light">Light</button>
-                  <button type="button" class="segmented-btn theme-btn" data-value="system">System</button>
-                </div>
-              </div>
+          <div class="setting-row">
+            <div class="setting-row-info">
+              <label for="setting-unit-select" class="setting-row-title">Satuan Jarak</label>
+              <p class="setting-row-desc">Satuan pengukuran jarak pada antarmuka (Data tersimpan presisi dalam KM).</p>
+            </div>
+            <div class="setting-row-control">
+              <select id="setting-unit-select" name="setting-unit-select" class="form-control compact-select" aria-label="Satuan Jarak">
+                <option value="km">Kilometer (km)</option>
+                <option value="miles">Miles (mi)</option>
+              </select>
             </div>
           </div>
 
-          <div class="settings-divider"></div>
-
-          <!-- Section 3: Preferensi Aktivitas -->
-          <div class="settings-group">
-            <h2 class="settings-group-title">Preferensi Aktivitas</h2>
-
-            <div class="setting-row">
-              <div class="setting-row-info">
-                <label for="setting-unit-select" class="setting-row-title">Satuan Jarak</label>
-                <p class="setting-row-desc">Satuan pengukuran jarak pada antarmuka (Data tersimpan presisi dalam KM).</p>
-              </div>
-              <div class="setting-row-control">
-                <select id="setting-unit-select" name="setting-unit-select" class="form-control compact-select" aria-label="Satuan Jarak">
-                  <option value="km">Kilometer (km)</option>
-                  <option value="miles">Miles (mi)</option>
-                </select>
-              </div>
+          <div class="setting-row">
+            <div class="setting-row-info">
+              <label for="setting-default-activity" class="setting-row-title">Aktivitas Default</label>
+              <p class="setting-row-desc">Pilihan jenis olahraga otomatis saat membuka modal Catat Aktivitas.</p>
             </div>
+            <div class="setting-row-control">
+              <select id="setting-default-activity" name="setting-default-activity" class="form-control compact-select" aria-label="Aktivitas Default">
+                <option value="running">Lari</option>
+                <option value="cycling">Bersepeda</option>
+                <option value="walking">Jalan Kaki</option>
+                <option value="workout">Workout</option>
+              </select>
+            </div>
+          </div>
+        </div>
 
-            <div class="setting-row">
-              <div class="setting-row-info">
-                <label for="setting-default-activity" class="setting-row-title">Aktivitas Default</label>
-                <p class="setting-row-desc">Pilihan jenis olahraga otomatis saat membuka modal Catat Aktivitas.</p>
-              </div>
-              <div class="setting-row-control">
-                <select id="setting-default-activity" name="setting-default-activity" class="form-control compact-select" aria-label="Aktivitas Default">
-                  <option value="running">Lari</option>
-                  <option value="cycling">Bersepeda</option>
-                  <option value="walking">Jalan Kaki</option>
-                  <option value="workout">Workout</option>
-                </select>
-              </div>
+        <div class="settings-divider"></div>
+
+        <!-- Section 4: Data -->
+        <div class="settings-group">
+          <h2 class="settings-group-title">Data</h2>
+
+          <div class="setting-row">
+            <div class="setting-row-info">
+              <span class="setting-row-title">Cadangan & Pemulihan</span>
+              <p class="setting-row-desc">Ekspor data aktivitas & target ke file JSON atau pulihkan cadangan JSON Anda.</p>
+            </div>
+            <div class="setting-row-control action-btns-row">
+              <button id="btn-export-data" class="btn btn-secondary btn-sm" title="Ekspor Data JSON">Ekspor Data</button>
+              <button id="btn-trigger-import-data" class="btn btn-secondary btn-sm" title="Impor Data JSON">Impor Data</button>
+              <input type="file" id="file-input-import" accept=".json" style="display: none;" />
             </div>
           </div>
 
-          <div class="settings-divider"></div>
-
-          <!-- Section 4: Data -->
-          <div class="settings-group">
-            <h2 class="settings-group-title">Data</h2>
-
-            <div class="setting-row">
-              <div class="setting-row-info">
-                <span class="setting-row-title">Cadangan & Pemulihan</span>
-                <p class="setting-row-desc">Ekspor data aktivitas & target ke file JSON atau pulihkan cadangan JSON Anda.</p>
-              </div>
-              <div class="setting-row-control action-btns-row">
-                <button id="btn-export-data" class="btn btn-secondary btn-sm" title="Ekspor Data JSON">Ekspor Data</button>
-                <button id="btn-trigger-import-data" class="btn btn-secondary btn-sm" title="Impor Data JSON">Impor Data</button>
-                <input type="file" id="file-input-import" accept=".json" style="display: none;" />
-              </div>
+          <div class="setting-row danger-zone-row">
+            <div class="setting-row-info">
+              <span class="setting-row-title danger-text">Hapus Semua Data</span>
+              <p class="setting-row-desc">Hapus seluruh aktivitas, target, dan pencapaian secara permanen dari perangkat ini.</p>
             </div>
-
-            <div class="setting-row danger-zone-row">
-              <div class="setting-row-info">
-                <span class="setting-row-title danger-text">Hapus Semua Data</span>
-                <p class="setting-row-desc">Hapus seluruh aktivitas, target, dan pencapaian secara permanen dari perangkat ini.</p>
-              </div>
-              <div class="setting-row-control">
-                <button id="btn-trigger-clear-data" class="btn btn-danger btn-sm">Hapus Semua Data</button>
-              </div>
+            <div class="setting-row-control">
+              <button id="btn-trigger-clear-data" class="btn btn-danger btn-sm">Hapus Semua Data</button>
             </div>
           </div>
+        </div>
 
-          <div class="settings-divider"></div>
+        <div class="settings-divider"></div>
 
-          <!-- Section 5: Tentang -->
-          <div class="settings-group about-group">
-            <div class="about-app-brand">
-              <img src="/src/assets/logo/logo.svg" alt="HabitPulse Logo" class="about-logo-img" />
-              <div>
-                <h3 class="about-app-title">HabitPulse <span class="app-version-badge">v1.0.0</span></h3>
-                <p class="about-app-tagline">Sports Performance Tracker — Local-First Edition</p>
-              </div>
+        <!-- Section 5: Tentang -->
+        <div class="settings-group about-group">
+          <div class="about-app-brand">
+            <img src="/src/assets/logo/logo.svg" alt="HabitPulse Logo" class="about-logo-img" />
+            <div>
+              <h3 class="about-app-title">HabitPulse <span class="app-version-badge">v1.0.0</span></h3>
+              <p class="about-app-tagline">Sports Performance Tracker — Local-First Edition</p>
             </div>
-          </div>
-
         </div>
       </div>
-    </section>  </div>
-      </div>
-      </main>
-    </div>
+    </section>
+  </main>
+</div>
   </div>
 
   <!-- Mobile / Tablet Bottom Navigation Bar (< 1024px) -->

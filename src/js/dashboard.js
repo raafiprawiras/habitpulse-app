@@ -293,45 +293,6 @@ export const DashboardController = {
       }
     });
     this.renderRecentActivities();
-    const topIconBtnSettings = $('#top-icon-btn-settings');
-    if (topIconBtnSettings) topIconBtnSettings.innerHTML = Icons.settings('icon-md');
-    if (iconDist) iconDist.innerHTML = Icons.distance('icon-md');
-    if (iconDur) iconDur.innerHTML = Icons.duration('icon-md');
-    if (iconCal) iconCal.innerHTML = Icons.calories('icon-md');
-    if (iconCnt) iconCnt.innerHTML = Icons.trophy('icon-md');
-    if (topIconBtnAdd) topIconBtnAdd.innerHTML = Icons.plus('icon-sm');
-    if (iconBtnAdd) iconBtnAdd.innerHTML = Icons.plus('icon-sm');
-    if (iconCloseModal) iconCloseModal.innerHTML = Icons.close('icon-md');
-
-    // Sidebar Icons
-    const sbOverview = $('#sidebar-icon-overview');
-    const sbHistory = $('#sidebar-icon-history');
-    const sbStats = $('#sidebar-icon-statistics');
-    const sbAchieve = $('#sidebar-icon-achievements');
-    const sbSettings = $('#sidebar-icon-settings');
-    const sbStreak = $('#sidebar-streak-flame');
-
-    if (sbOverview) sbOverview.innerHTML = Icons.dashboard('icon-md');
-    if (sbHistory) sbHistory.innerHTML = Icons.activities('icon-md');
-    if (sbStats) sbStats.innerHTML = Icons.statistics('icon-md');
-    if (sbAchieve) sbAchieve.innerHTML = Icons.target('icon-md');
-    if (sbSettings) sbSettings.innerHTML = Icons.settings('icon-md');
-    if (sbStreak) sbStreak.innerHTML = Icons.flame('icon-md');
-
-    // Mobile Bottom Nav Icons
-    const mobOverview = $('#mobile-icon-overview');
-    const mobHistory = $('#mobile-icon-history');
-    const mobStats = $('#mobile-icon-statistics');
-    const mobAchieve = $('#mobile-icon-achievements');
-    const mobSettings = $('#mobile-icon-settings');
-    const mobFab = $('#mobile-fab-icon');
-
-    if (mobOverview) mobOverview.innerHTML = Icons.dashboard('icon-md');
-    if (mobHistory) mobHistory.innerHTML = Icons.activities('icon-md');
-    if (mobStats) mobStats.innerHTML = Icons.statistics('icon-md');
-    if (mobAchieve) mobAchieve.innerHTML = Icons.target('icon-md');
-    if (mobSettings) mobSettings.innerHTML = Icons.settings('icon-md');
-    if (mobFab) mobFab.innerHTML = Icons.plus('icon-lg');
   },
 
   bindNavigation() {
@@ -350,6 +311,68 @@ export const DashboardController = {
     window.addEventListener('hashchange', () => {
       this.handleInitialTab();
     });
+  },
+
+  handleInitialTab() {
+    const hash = window.location.hash.replace('#', '');
+    const tabMap = {
+      'dashboard-overview': 'overview',
+      'overview': 'overview',
+      'history': 'history',
+      'statistics': 'statistics',
+      'achievements': 'achievements',
+      'settings': 'settings'
+    };
+
+    const targetTab = tabMap[hash] || 'overview';
+    this.switchTab(targetTab, false);
+  },
+
+  switchTab(tabKey, updateHash = true) {
+    const tabMap = {
+      overview: 'dashboard-overview',
+      history: 'history',
+      statistics: 'statistics',
+      achievements: 'achievements',
+      settings: 'settings'
+    };
+
+    const targetId = tabMap[tabKey] || 'dashboard-overview';
+
+    // Toggle active link styles in sidebar and bottom navigation
+    $$('.sidebar-link, .mobile-bottom-item').forEach(el => {
+      if (el.dataset.tab === tabKey) {
+        el.classList.add('active');
+      } else {
+        el.classList.remove('active');
+      }
+    });
+
+    // Toggle tab content visibility
+    $$('.dashboard-tab-content, section.history-section, section#statistics, section#achievements, section#settings').forEach(sec => {
+      if (sec.id === targetId || (targetId === 'dashboard-overview' && sec.id === 'dashboard-overview')) {
+        sec.style.display = 'block';
+        sec.classList.add('active');
+      } else {
+        sec.style.display = 'none';
+        sec.classList.remove('active');
+      }
+    });
+
+    if (updateHash) {
+      history.pushState(null, '', `#${targetId}`);
+    }
+
+    // Trigger tab-specific renders
+    if (tabKey === 'overview') {
+      this.render();
+    } else if (tabKey === 'statistics' && AnalyticsController && typeof AnalyticsController.render === 'function') {
+      AnalyticsController.render();
+    } else if (tabKey === 'history' && HistoryController && typeof HistoryController.render === 'function') {
+      HistoryController.render();
+    } else if (tabKey === 'achievements' && AchievementsController && typeof AchievementsController.render === 'function') {
+      AchievementsController.render();
+    }
   },
 
   openActivityModal() {
@@ -531,14 +554,16 @@ export const DashboardController = {
   render() {
     this.renderGreeting();
     this.renderStats();
+    this.renderDailyDistanceChart();
+    this.renderMinutesPerDayChart();
     this.renderRecentActivities();
-    if ($('#history').classList.contains('active')) {
+    if ($('#history')?.classList.contains('active')) {
       HistoryController.render();
     }
-    if ($('#statistics').classList.contains('active')) {
+    if ($('#statistics')?.classList.contains('active')) {
       AnalyticsController.render();
     }
-    if ($('#achievements').classList.contains('active')) {
+    if ($('#achievements')?.classList.contains('active')) {
       AchievementsController.render();
     }
   },
@@ -578,7 +603,8 @@ export const DashboardController = {
 
     const elTargetMainVal = $('#target-main-value');
     const elTargetMainTotal = $('#target-main-total');
-    if (elTargetMainVal) elTargetMainVal.textContent = (stats.weekly.totalDistanceKm || 0).toFixed(1);
+    const mainDistVal = unit === 'miles' ? (stats.weekly.totalDistanceKm * 0.621371).toFixed(1) : (stats.weekly.totalDistanceKm || 0).toFixed(1);
+    if (elTargetMainVal) elTargetMainVal.textContent = mainDistVal;
     if (elTargetMainTotal) elTargetMainTotal.textContent = `dari ${targetDistFormatted}`;
 
     // Donut SVG Circle Offset calculation
@@ -645,11 +671,12 @@ export const DashboardController = {
       <div style="width: 100%; height: 180px; display: flex; align-items: flex-end; justify-content: space-between; gap: 0.75rem; padding-top: 1.5rem; border-bottom: 1px solid var(--color-border); position: relative;">
         ${last7Days.map(item => {
           const formatted = unit === 'miles' ? (item.distanceKm * 0.621371).toFixed(1) + ' mi' : item.distanceKm.toFixed(1) + ' km';
+          const numFormatted = unit === 'miles' ? (item.distanceKm * 0.621371).toFixed(1) : item.distanceKm.toFixed(1);
           const heightPct = Math.round((item.distanceKm / maxDist) * 100);
 
           return `
             <div style="flex: 1; display: flex; flex-direction: column; align-items: center; height: 100%; justify-content: flex-end; position: relative;" title="${item.dayName}: ${formatted}">
-              ${item.distanceKm > 0 ? `<span style="font-size: 0.68rem; font-weight: 700; color: var(--color-primary); margin-bottom: 0.35rem;">${item.distanceKm.toFixed(1)}</span>` : ''}
+              ${item.distanceKm > 0 ? `<span style="font-size: 0.68rem; font-weight: 700; color: var(--color-primary); margin-bottom: 0.35rem;">${numFormatted}</span>` : ''}
               <div style="width: 100%; max-width: 28px; height: ${Math.max(heightPct, item.distanceKm > 0 ? 8 : 4)}%; background: ${item.distanceKm > 0 ? 'linear-gradient(180deg, #7CE424 0%, rgba(124,228,36,0.2) 100%)' : 'rgba(255,255,255,0.05)'}; border-radius: var(--radius-sm); transition: height 0.5s ease;"></div>
               <span style="font-size: 0.75rem; font-weight: 600; color: var(--color-text-secondary); margin-top: 0.5rem;">${item.dayName}</span>
             </div>
