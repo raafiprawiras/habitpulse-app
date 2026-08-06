@@ -1,44 +1,55 @@
 /* HabitPulse Design System Tokens — Dark Fitness Technology & Athletic Edition */
 :root {
   /* Color Palette - Core Brand Lime Green */
-  --primary: #8CFB2C;                 /* Electric Athletic Lime Green */
-  --primary-hover: #7CE424;           /* Saturated Lime Green */
-  --primary-soft: rgba(140, 251, 44, 0.12);
-  --secondary: #8CFB2C;
-  --accent: #8CFB2C;
+  --color-primary: #7CE424;           /* Primary Green #7CE424 */
+  --primary: #7CE424;                 /* Primary Accent */
+  --primary-hover: #6ED31B;           /* Darker Lime Hover */
+  --primary-soft: rgba(124, 228, 36, 0.12);
+  --secondary: #7CE424;
+  --accent: #7CE424;
 
   /* Dark Athletic Background Hierarchy */
-  --dark-900: #070D10;                /* Deep Athletic Dark */
-  --dark-800: #0B1216;                /* Dark Secondary */
-  --dark-700: #111A1F;                /* Dark Surface */
+  --color-bg: #070D10;                /* Main Dark Background */
+  --color-bg-secondary: #0B1115;      /* Secondary Dark Background / Sidebar */
+  --color-surface: #121A1E;           /* Card & Surface Dark Background */
+  --color-surface-hover: #172126;     /* Card Hover Surface */
+
+  --dark-900: #070D10;
+  --dark-800: #0B1115;
+  --dark-700: #121A1E;
 
   /* Status & Feedback Colors */
-  --color-success: #8CFB2C;           /* Lime Success */
+  --color-success: #7CE424;           /* Lime Success */
   --color-warning: #F59E0B;           /* Amber Warning */
   --color-danger: #EF4444;            /* Rose Danger */
   --color-info: #38BDF8;              /* Sky Info */
 
   /* Activity Specific Color Tokens */
-  --activity-running: #8CFB2C;        /* Lime Pulse Running */
+  --activity-running: #7CE424;        /* Lime Pulse Running */
   --activity-cycling: #38BDF8;        /* Electric Cyan Cycling */
   --activity-walking: #A855F7;        /* Pulse Violet Walking */
   --activity-workout: #F97316;        /* Flame Orange Workout */
 
   /* Default Dark Mode Semantic Tokens (Athletic Performance Control Center) */
   --bg-main: #070D10;                 /* Dark Background */
-  --bg-surface: #111A1F;              /* Surface */
+  --bg-surface: #121A1E;              /* Surface */
   --bg-elevated: #172126;             /* Surface Elevated */
-  --bg-subtle: #0B1216;               /* Secondary Background */
-  --bg-glass: rgba(17, 26, 31, 0.88);
+  --bg-subtle: #0B1115;               /* Secondary Background */
+  --bg-glass: rgba(18, 26, 30, 0.92);
+
+  --color-text-primary: #F8FAFC;      /* Primary White Text */
+  --color-text-secondary: #94A3B8;    /* Muted Slate Text */
+  --color-text-muted: #64748B;        /* Darker Slate Text */
 
   --text-primary: #F8FAFC;            /* Clean White Text */
   --text-secondary: #94A3B8;          /* Slate 400 */
   --text-muted: #64748B;              /* Slate 500 */
   --text-inverse: #070D10;
 
+  --color-border: rgba(255, 255, 255, 0.10);  /* Crisp Thin Border */
   --border-color: rgba(255, 255, 255, 0.10);  /* Crisp Thin Border */
-  --border-hover: rgba(140, 251, 44, 0.35);
-  --ring-focus: rgba(140, 251, 44, 0.40);
+  --border-hover: rgba(124, 228, 36, 0.35);
+  --ring-focus: rgba(124, 228, 36, 0.40);
 
   /* Elevation & Shadows (Athletic Low-Glow SaaS Layers) */
   --shadow-xs: 0 1px 2px 0 rgba(0, 0, 0, 0.4);

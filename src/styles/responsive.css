@@ -1,6 +1,6 @@
 /* HabitPulse Responsive Design System — Athletic Dark Edition */
 
-/* Mobile Bottom Navigation Bar (< 768px) */
+/* Mobile / Tablet Bottom Navigation Bar (< 1024px) */
 .mobile-bottom-nav {
   display: none;
   position: fixed;
@@ -8,15 +8,15 @@
   left: 0;
   right: 0;
   height: 64px;
-  background-color: var(--bg-surface);
-  border-top: 1px solid var(--border-color);
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
+  background-color: var(--color-surface);
+  border-top: 1px solid var(--color-border);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
   z-index: var(--z-sticky);
   justify-content: space-around;
   align-items: center;
-  padding: 0 0.5rem;
-  box-shadow: 0 -4px 16px rgba(0, 0, 0, 0.4);
+  padding: 0 0.5rem calc(0.25rem + env(safe-area-inset-bottom, 0px));
+  box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.5);
 }
 
 .mobile-bottom-item {
@@ -25,16 +25,17 @@
   align-items: center;
   justify-content: center;
   gap: 0.2rem;
-  color: var(--text-secondary);
+  color: var(--color-text-secondary);
   text-decoration: none;
   font-size: 0.68rem;
   font-weight: 700;
-  padding: 0.35rem 0.6rem;
+  padding: 0.35rem 0.5rem;
   border-radius: var(--radius-md);
   transition: all var(--transition-fast);
   touch-action: manipulation;
   flex: 1;
   text-align: center;
+  min-height: 44px;
 }
 
 .mobile-bottom-item svg {
@@ -44,52 +45,66 @@
 
 .mobile-bottom-item:hover,
 .mobile-bottom-item.active {
-  color: #8CFB2C;
+  color: var(--color-primary);
 }
 
 .mobile-bottom-item.active svg {
-  stroke: #8CFB2C;
+  stroke: var(--color-primary);
 }
 
-/* FAB Action Button in Bottom Nav */
+/* Floating FAB Action Button in Bottom Nav */
 .mobile-bottom-fab {
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 44px;
-  height: 44px;
+  width: 48px;
+  height: 48px;
   border-radius: var(--radius-full);
-  background-color: #8CFB2C;
+  background-color: var(--color-primary);
   color: #070D10;
   border: none;
-  box-shadow: 0 4px 14px rgba(140, 251, 44, 0.35);
-  margin-top: -16px;
+  box-shadow: 0 4px 16px rgba(124, 228, 36, 0.4);
+  margin-top: -18px;
   cursor: pointer;
   touch-action: manipulation;
+  flex-shrink: 0;
 }
 
-/* Desktop / Large Screens (>= 1440px) */
-@media (min-width: 1440px) {
-  .container {
-    max-width: 1280px;
-  }
+.mobile-bottom-fab:active {
+  transform: scale(0.95);
 }
 
-/* Laptop (1024px to 1439px) */
-@media (max-width: 1439px) and (min-width: 1024px) {
-  .stats-8-grid {
-    grid-template-columns: repeat(4, 1fr);
-    gap: var(--space-4);
+/* Tablet & Mobile Breakpoints (< 1024px) */
+@media (max-width: 1023px) {
+  .dashboard-app-layout {
+    grid-template-columns: 1fr;
   }
-  .breakdown-grid {
-    grid-template-columns: repeat(4, 1fr);
-    gap: var(--space-4);
-  }
-}
 
-/* Tablet (768px to 1023px) */
-@media (max-width: 1023px) and (min-width: 768px) {
-  .dashboard-top-grid {
+  .dashboard-sidebar {
+    display: none !important; /* Hide Desktop Sidebar on Tablet & Mobile */
+  }
+
+  .app-top-header {
+    display: flex; /* Show Top Navigation Bar */
+  }
+
+  .mobile-bottom-nav {
+    display: flex; /* Show Bottom Navigation Bar */
+  }
+
+  .dashboard-viewport {
+    padding: 1.5rem 1.25rem 5.5rem;
+  }
+
+  .summary-metrics-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .dashboard-middle-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .dashboard-bottom-grid {
     grid-template-columns: 1fr;
   }
 
@@ -99,22 +114,6 @@
 
   .charts-grid {
     grid-template-columns: 1fr !important;
-  }
-
-  .history-control-bar {
-    grid-template-columns: 1fr 1fr;
-  }
-
-  .breakdown-grid {
-    grid-template-columns: repeat(2, 1fr);
-  }
-
-  .category-strip-grid {
-    grid-template-columns: repeat(2, 1fr);
-  }
-
-  .athletic-features-grid {
-    grid-template-columns: repeat(2, 1fr);
   }
 }
 
@@ -125,53 +124,45 @@
     overflow-x: hidden;
   }
 
-  .app-header {
-    height: 60px;
-  }
-
-  .dashboard-nav-tabs {
-    display: none;
-  }
-
-  .mobile-bottom-nav {
-    display: flex;
-  }
-
-  .dashboard-welcome-banner {
+  .dashboard-header-bar {
     flex-direction: column;
     align-items: flex-start;
-    padding: 1.25rem;
   }
 
-  .dashboard-welcome-banner .btn {
+  .btn-header-cta {
     width: 100%;
+    text-align: center;
+    justify-content: center;
   }
 
-  .dashboard-top-grid {
-    grid-template-columns: 1fr;
+  .summary-metrics-grid {
+    grid-template-columns: 1fr; /* Single column metric cards on mobile */
   }
 
-  .stats-grid {
-    grid-template-columns: 1fr;
+  .activity-row {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.75rem;
   }
 
-  .stats-8-grid {
-    grid-template-columns: 1fr;
+  .activity-row-metrics {
+    width: 100%;
+    justify-content: space-between;
   }
 
-  .charts-grid {
-    grid-template-columns: 1fr !important;
+  .activity-row-stat {
+    text-align: left;
   }
 
-  .achievements-grid {
+  .activity-row-actions {
+    margin-left: auto;
+  }
+
+  .breakdown-grid {
     grid-template-columns: 1fr;
   }
 
   .history-control-bar {
-    grid-template-columns: 1fr;
-  }
-
-  .breakdown-grid {
     grid-template-columns: 1fr;
   }
 

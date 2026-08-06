@@ -19,36 +19,137 @@ export const DashboardController = {
   init() {
     ActivityManager.init();
     this.bindEvents();
+    this.bindNavigation();
     this.renderStaticIcons();
+    this.handleInitialTab();
     this.render();
   },
 
   renderStaticIcons() {
+    // Top Bar & Modal Icons
     const iconDist = $('#icon-stat-distance');
     const iconDur = $('#icon-stat-duration');
     const iconCal = $('#icon-stat-calories');
     const iconCnt = $('#icon-stat-count');
-    const iconHeroPulse = $('#icon-hero-pulse');
+    const topIconBtnAdd = $('#top-icon-btn-add');
     const iconBtnAdd = $('#icon-btn-add');
     const iconCloseModal = $('#btn-close-modal');
 
-    if (iconDist) iconDist.innerHTML = Icons.distance('icon-lg');
-    if (iconDur) iconDur.innerHTML = Icons.duration('icon-lg');
-    if (iconCal) iconCal.innerHTML = Icons.calories('icon-lg');
-    if (iconCnt) iconCnt.innerHTML = Icons.trophy('icon-lg');
-    if (iconHeroPulse) iconHeroPulse.innerHTML = Icons.pulse('icon-sm');
+    if (iconDist) iconDist.innerHTML = Icons.distance('icon-md');
+    if (iconDur) iconDur.innerHTML = Icons.duration('icon-md');
+    if (iconCal) iconCal.innerHTML = Icons.calories('icon-md');
+    if (iconCnt) iconCnt.innerHTML = Icons.trophy('icon-md');
+    if (topIconBtnAdd) topIconBtnAdd.innerHTML = Icons.plus('icon-sm');
     if (iconBtnAdd) iconBtnAdd.innerHTML = Icons.plus('icon-sm');
     if (iconCloseModal) iconCloseModal.innerHTML = Icons.close('icon-md');
 
-    const iconRunBd = $('#icon-breakdown-running');
-    const iconCycBd = $('#icon-breakdown-cycling');
-    const iconWalkBd = $('#icon-breakdown-walking');
-    const iconWorkBd = $('#icon-breakdown-workout');
+    // Sidebar Icons
+    const sbOverview = $('#sidebar-icon-overview');
+    const sbHistory = $('#sidebar-icon-history');
+    const sbStats = $('#sidebar-icon-statistics');
+    const sbAchieve = $('#sidebar-icon-achievements');
+    const sbSettings = $('#sidebar-icon-settings');
+    const sbStreak = $('#sidebar-streak-flame');
 
-    if (iconRunBd) iconRunBd.innerHTML = Icons.running('icon-md');
-    if (iconCycBd) iconCycBd.innerHTML = Icons.cycling('icon-md');
-    if (iconWalkBd) iconWalkBd.innerHTML = Icons.walking('icon-md');
-    if (iconWorkBd) iconWorkBd.innerHTML = Icons.workout('icon-md');
+    if (sbOverview) sbOverview.innerHTML = Icons.dashboard('icon-md');
+    if (sbHistory) sbHistory.innerHTML = Icons.activities('icon-md');
+    if (sbStats) sbStats.innerHTML = Icons.statistics('icon-md');
+    if (sbAchieve) sbAchieve.innerHTML = Icons.target('icon-md');
+    if (sbSettings) sbSettings.innerHTML = Icons.settings('icon-md');
+    if (sbStreak) sbStreak.innerHTML = Icons.flame('icon-md');
+
+    // Mobile Bottom Nav Icons
+    const mobOverview = $('#mobile-icon-overview');
+    const mobHistory = $('#mobile-icon-history');
+    const mobStats = $('#mobile-icon-statistics');
+    const mobAchieve = $('#mobile-icon-achievements');
+    const mobSettings = $('#mobile-icon-settings');
+    const mobFab = $('#mobile-fab-icon');
+
+    if (mobOverview) mobOverview.innerHTML = Icons.dashboard('icon-md');
+    if (mobHistory) mobHistory.innerHTML = Icons.activities('icon-md');
+    if (mobStats) mobStats.innerHTML = Icons.statistics('icon-md');
+    if (mobAchieve) mobAchieve.innerHTML = Icons.target('icon-md');
+    if (mobSettings) mobSettings.innerHTML = Icons.settings('icon-md');
+    if (mobFab) mobFab.innerHTML = Icons.plus('icon-lg');
+  },
+
+  bindNavigation() {
+    const navLinks = $$('.sidebar-link, .mobile-bottom-item, .nav-link');
+    
+    navLinks.forEach(link => {
+      link.addEventListener('click', (e) => {
+        const tab = link.dataset.tab;
+        if (tab) {
+          e.preventDefault();
+          this.switchTab(tab);
+        }
+      });
+    });
+
+    window.addEventListener('hashchange', () => {
+      this.handleInitialTab();
+    });
+  },
+
+  handleInitialTab() {
+    const hash = window.location.hash.replace('#', '');
+    const tabMap = {
+      'dashboard-overview': 'overview',
+      'overview': 'overview',
+      'history': 'history',
+      'statistics': 'statistics',
+      'achievements': 'achievements',
+      'settings': 'settings'
+    };
+
+    const targetTab = tabMap[hash] || 'overview';
+    this.switchTab(targetTab, false);
+  },
+
+  switchTab(tabKey, updateHash = true) {
+    const tabMap = {
+      overview: 'dashboard-overview',
+      history: 'history',
+      statistics: 'statistics',
+      achievements: 'achievements',
+      settings: 'settings'
+    };
+
+    const targetId = tabMap[tabKey] || 'dashboard-overview';
+
+    // Toggle active link styles in sidebar and bottom navigation
+    $$('.sidebar-link, .mobile-bottom-item').forEach(el => {
+      if (el.dataset.tab === tabKey) {
+        el.classList.add('active');
+      } else {
+        el.classList.remove('active');
+      }
+    });
+
+    // Toggle tab content visibility
+    $$('.dashboard-tab-content, section.history-section, section#statistics, section#achievements, section#settings').forEach(sec => {
+      if (sec.id === targetId || (targetId === 'dashboard-overview' && sec.id === 'dashboard-overview')) {
+        sec.style.display = 'block';
+        sec.classList.add('active');
+      } else {
+        sec.style.display = 'none';
+        sec.classList.remove('active');
+      }
+    });
+
+    if (updateHash) {
+      history.pushState(null, '', `#${targetId}`);
+    }
+
+    // Trigger tab-specific renders
+    if (tabKey === 'statistics' && AnalyticsController && typeof AnalyticsController.render === 'function') {
+      AnalyticsController.render();
+    } else if (tabKey === 'history' && HistoryController && typeof HistoryController.render === 'function') {
+      HistoryController.render();
+    } else if (tabKey === 'achievements' && AchievementsController && typeof AchievementsController.render === 'function') {
+      AchievementsController.render();
+    }
   },
 
   bindEvents() {
@@ -172,7 +273,7 @@ export const DashboardController = {
         tab.classList.remove('active');
       }
     });
-    this.renderActivityList();
+    this.renderRecentActivities();
   },
 
   openActivityModal() {
@@ -313,7 +414,9 @@ export const DashboardController = {
   render() {
     this.renderGreeting();
     this.renderStats();
-    this.renderActivityList();
+    this.renderDailyDistanceChart();
+    this.renderMinutesPerDayChart();
+    this.renderRecentActivities();
     
     if (AnalyticsController && typeof AnalyticsController.render === 'function') {
       AnalyticsController.render();
@@ -339,59 +442,158 @@ export const DashboardController = {
     const stats = StatisticsManager.calculateOverview(allActivities);
     const unit = StorageEngine.getUnits();
 
+    // 4 Primary Summary Cards
     const elTotalDistance = $('#stat-total-distance');
     const elTotalDuration = $('#stat-total-duration');
     const elTotalCalories = $('#stat-total-calories');
     const elTotalCount = $('#stat-total-count');
 
-    if (elTotalDistance) elTotalDistance.textContent = formatDistance(stats.totalDistanceKm, unit);
-    if (elTotalDuration) elTotalDuration.textContent = formatDuration(stats.totalDurationMins);
-    if (elTotalCalories) elTotalCalories.textContent = `${stats.totalCalories.toLocaleString()} kcal`;
-    if (elTotalCount) elTotalCount.textContent = stats.totalActivities.toString();
+    if (elTotalDistance) elTotalDistance.textContent = formatDistance(stats.weekly.totalDistanceKm, unit);
+    if (elTotalDuration) elTotalDuration.textContent = formatDuration(stats.weekly.totalDurationMins);
+    if (elTotalCalories) elTotalCalories.textContent = `${stats.weekly.totalCalories.toLocaleString()} kcal`;
+    if (elTotalCount) elTotalCount.textContent = `${stats.weekly.activitiesCount} sesi`;
 
+    // Sidebar Current Streak
+    const elSidebarStreak = $('#sidebar-streak-days');
+    if (elSidebarStreak) elSidebarStreak.textContent = `${stats.currentStreak} hari`;
+
+    // Weekly Target Donut & Progress Bars
+    const targetDistFormatted = unit === 'miles' ? (stats.weekly.targetDistance * 0.621371).toFixed(1) + ' mi' : stats.weekly.targetDistance + ' km';
+    const currentDistFormatted = formatDistance(stats.weekly.totalDistanceKm, unit);
+
+    const elTargetMainVal = $('#target-main-value');
+    const elTargetMainTotal = $('#target-main-total');
+    if (elTargetMainVal) elTargetMainVal.textContent = (stats.weekly.totalDistanceKm || 0).toFixed(1);
+    if (elTargetMainTotal) elTargetMainTotal.textContent = `dari ${targetDistFormatted}`;
+
+    // Donut SVG Circle Offset calculation
+    const donutCircle = $('#donut-progress-circle');
+    if (donutCircle) {
+      const circumference = 251.2; // 2 * PI * 40
+      const distPct = Math.min(stats.weekly.distancePct, 100);
+      const offset = circumference - (distPct / 100) * circumference;
+      donutCircle.style.strokeDashoffset = offset.toString();
+    }
+
+    // Weekly Sub progress bars (Visually capped at 100% max using Math.min)
     const elGoalNumber = $('#weekly-goal-number');
-    const elGoalSubtext = $('#weekly-goal-subtext');
     const elGoalFill = $('#weekly-goal-fill');
-    const elGoalBadge = $('#weekly-goal-badge');
-
-    if (elGoalNumber) elGoalNumber.textContent = `${stats.weekly.activitiesCount} / ${stats.weekly.targetActivities} Activities`;
-    if (elGoalSubtext) elGoalSubtext.textContent = `${stats.weekly.activitiesPct}% of weekly activity goal`;
-    if (elGoalBadge) elGoalBadge.textContent = `${stats.weekly.activitiesPct}%`;
-    if (elGoalFill) elGoalFill.style.width = `${stats.weekly.activitiesPct}%`;
+    if (elGoalNumber) elGoalNumber.textContent = `${stats.weekly.activitiesCount} / ${stats.weekly.targetActivities}`;
+    if (elGoalFill) elGoalFill.style.width = `${Math.min(stats.weekly.activitiesPct, 100)}%`;
 
     const elMinGoalNumber = $('#goal-mins-number');
     const elMinGoalFill = $('#goal-mins-fill');
-    if (elMinGoalNumber) elMinGoalNumber.textContent = `${stats.weekly.totalDurationMins} / ${stats.weekly.targetMinutes} Mins`;
-    if (elMinGoalFill) elMinGoalFill.style.width = `${stats.weekly.minutesPct}%`;
+    if (elMinGoalNumber) elMinGoalNumber.textContent = `${stats.weekly.totalDurationMins} / ${stats.weekly.targetMinutes}`;
+    if (elMinGoalFill) elMinGoalFill.style.width = `${Math.min(stats.weekly.minutesPct, 100)}%`;
 
     const elDistGoalNumber = $('#goal-dist-number');
     const elDistGoalFill = $('#goal-dist-fill');
-    const targetDistFormatted = unit === 'miles' ? (stats.weekly.targetDistance * 0.621371).toFixed(1) + ' mi' : stats.weekly.targetDistance + ' KM';
-    const currentDistFormatted = formatDistance(stats.weekly.totalDistanceKm, unit);
-
     if (elDistGoalNumber) elDistGoalNumber.textContent = `${currentDistFormatted} / ${targetDistFormatted}`;
-    if (elDistGoalFill) elDistGoalFill.style.width = `${stats.weekly.distancePct}%`;
-
-    const categoryTypes = ['running', 'cycling', 'walking', 'workout'];
-    categoryTypes.forEach(type => {
-      const typeData = stats.byType[type];
-      const countEl = $(`#breakdown-count-${type}`);
-      const fillEl = $(`#breakdown-fill-${type}`);
-      const metaEl = $(`#breakdown-meta-${type}`);
-
-      if (countEl) countEl.textContent = `${typeData.count} Sesi`;
-      if (fillEl) fillEl.style.width = `${typeData.percentage}%`;
-      if (metaEl) {
-        if (type === 'workout') {
-          metaEl.textContent = `${formatDuration(typeData.duration)} • ${typeData.calories} kcal`;
-        } else {
-          metaEl.textContent = `${formatDistance(typeData.distance, unit)} • ${formatDuration(typeData.duration)}`;
-        }
-      }
-    });
+    if (elDistGoalFill) elDistGoalFill.style.width = `${Math.min(stats.weekly.distancePct, 100)}%`;
   },
 
-  renderActivityList() {
+  /**
+   * Render 7-day Daily Distance SVG Line/Bar Chart
+   */
+  renderDailyDistanceChart() {
+    const container = $('#daily-distance-chart-wrapper');
+    if (!container) return;
+
+    const activities = ActivityManager.getAll();
+    const unit = StorageEngine.getUnits();
+
+    // Compute distance per day for last 7 days (today back to 6 days ago)
+    const last7Days = [];
+    const now = new Date();
+    const dayNames = ['Min', 'Sen', 'Sel', 'Rab', 'Kam', 'Jum', 'Sab'];
+
+    for (let i = 6; i >= 0; i--) {
+      const d = new Date(now);
+      d.setDate(now.getDate() - i);
+      const dateStr = d.toISOString().split('T')[0];
+      const dayName = dayNames[d.getDay()];
+      last7Days.push({ dateStr, dayName, distanceKm: 0 });
+    }
+
+    activities.forEach(act => {
+      if (!act.date) return;
+      const actDate = act.date.split('T')[0];
+      const item = last7Days.find(d => d.dateStr === actDate);
+      if (item) {
+        item.distanceKm += (Number(act.distance) || 0);
+      }
+    });
+
+    const maxDist = Math.max(...last7Days.map(d => d.distanceKm), 10);
+
+    container.innerHTML = `
+      <div style="width: 100%; height: 180px; display: flex; align-items: flex-end; justify-content: space-between; gap: 0.75rem; padding-top: 1.5rem; border-bottom: 1px solid var(--color-border); position: relative;">
+        ${last7Days.map(item => {
+          const formatted = unit === 'miles' ? (item.distanceKm * 0.621371).toFixed(1) + ' mi' : item.distanceKm.toFixed(1) + ' km';
+          const heightPct = Math.round((item.distanceKm / maxDist) * 100);
+
+          return `
+            <div style="flex: 1; display: flex; flex-direction: column; align-items: center; height: 100%; justify-content: flex-end; position: relative;" title="${item.dayName}: ${formatted}">
+              ${item.distanceKm > 0 ? `<span style="font-size: 0.68rem; font-weight: 700; color: var(--color-primary); margin-bottom: 0.35rem;">${item.distanceKm.toFixed(1)}</span>` : ''}
+              <div style="width: 100%; max-width: 28px; height: ${Math.max(heightPct, item.distanceKm > 0 ? 8 : 4)}%; background: ${item.distanceKm > 0 ? 'linear-gradient(180deg, #7CE424 0%, rgba(124,228,36,0.2) 100%)' : 'rgba(255,255,255,0.05)'}; border-radius: var(--radius-sm); transition: height 0.5s ease;"></div>
+              <span style="font-size: 0.75rem; font-weight: 600; color: var(--color-text-secondary); margin-top: 0.5rem;">${item.dayName}</span>
+            </div>
+          `;
+        }).join('')}
+      </div>
+    `;
+  },
+
+  /**
+   * Render 7-day Minutes Per Day SVG Bar Chart
+   */
+  renderMinutesPerDayChart() {
+    const container = $('#minutes-per-day-chart-wrapper');
+    if (!container) return;
+
+    const activities = ActivityManager.getAll();
+
+    const last7Days = [];
+    const now = new Date();
+    const dayNames = ['Min', 'Sen', 'Sel', 'Rab', 'Kam', 'Jum', 'Sab'];
+
+    for (let i = 6; i >= 0; i--) {
+      const d = new Date(now);
+      d.setDate(now.getDate() - i);
+      const dateStr = d.toISOString().split('T')[0];
+      const dayName = dayNames[d.getDay()];
+      last7Days.push({ dateStr, dayName, durationMins: 0 });
+    }
+
+    activities.forEach(act => {
+      if (!act.date) return;
+      const actDate = act.date.split('T')[0];
+      const item = last7Days.find(d => d.dateStr === actDate);
+      if (item) {
+        item.durationMins += (Number(act.duration) || 0);
+      }
+    });
+
+    const maxMins = Math.max(...last7Days.map(d => d.durationMins), 60);
+
+    container.innerHTML = `
+      <div style="width: 100%; height: 180px; display: flex; align-items: flex-end; justify-content: space-between; gap: 0.5rem; padding-top: 1.5rem; border-bottom: 1px solid var(--color-border); position: relative;">
+        ${last7Days.map(item => {
+          const heightPct = Math.round((item.durationMins / maxMins) * 100);
+
+          return `
+            <div style="flex: 1; display: flex; flex-direction: column; align-items: center; height: 100%; justify-content: flex-end;" title="${item.dayName}: ${item.durationMins}m">
+              ${item.durationMins > 0 ? `<span style="font-size: 0.68rem; font-weight: 700; color: #38BDF8; margin-bottom: 0.35rem;">${item.durationMins}m</span>` : ''}
+              <div style="width: 100%; max-width: 24px; height: ${Math.max(heightPct, item.durationMins > 0 ? 8 : 4)}%; background: ${item.durationMins > 0 ? 'linear-gradient(180deg, #38BDF8 0%, rgba(56,189,248,0.2) 100%)' : 'rgba(255,255,255,0.05)'}; border-radius: var(--radius-sm); transition: height 0.5s ease;"></div>
+              <span style="font-size: 0.75rem; font-weight: 600; color: var(--color-text-secondary); margin-top: 0.5rem;">${item.dayName}</span>
+            </div>
+          `;
+        }).join('')}
+      </div>
+    `;
+  },
+
+  renderRecentActivities() {
     const container = $('#activities-container');
     if (!container) return;
 
@@ -402,10 +604,10 @@ export const DashboardController = {
       container.innerHTML = `
         <div class="empty-state">
           <div class="empty-icon">${Icons.pulse('icon-xl')}</div>
-          <h3 class="empty-title">No activities yet</h3>
-          <p class="empty-desc">Start your first activity and build your momentum.</p>
+          <h3 class="empty-title">Belum ada aktivitas</h3>
+          <p class="empty-desc">Catat aktivitas pertamamu untuk mulai melihat progres kinerjamu.</p>
           <button class="btn btn-primary btn-trigger-modal">
-            ${Icons.plus('icon-sm')} Add First Activity
+            ${Icons.plus('icon-sm')} Catat Aktivitas
           </button>
         </div>
       `;
@@ -418,10 +620,10 @@ export const DashboardController = {
     }
 
     const typeIcons = {
-      running: Icons.running('icon-lg'),
-      cycling: Icons.cycling('icon-lg'),
-      walking: Icons.walking('icon-lg'),
-      workout: Icons.workout('icon-lg')
+      running: Icons.running('icon-md'),
+      cycling: Icons.cycling('icon-md'),
+      walking: Icons.walking('icon-md'),
+      workout: Icons.workout('icon-md')
     };
 
     const typeNames = {
@@ -431,58 +633,48 @@ export const DashboardController = {
       workout: 'Workout'
     };
 
-    container.innerHTML = activities.map(act => {
-      const icon = typeIcons[act.type] || Icons.pulse('icon-lg');
+    // Limit to maximum 5 recent activities for dashboard view
+    const recentList = activities.slice(0, 5);
+
+    container.innerHTML = recentList.map(act => {
+      const icon = typeIcons[act.type] || Icons.pulse('icon-md');
       const typeName = typeNames[act.type] || act.type;
-      const pace = act.type === 'running' || act.type === 'walking' || act.type === 'cycling'
-        ? calculatePace(act.duration, act.distance, unit)
-        : '-';
 
       return `
-        <article class="activity-card" data-id="${act.id}">
-          <div class="activity-main-info">
-            <div class="activity-avatar badge-${act.type}">
+        <article class="activity-row" data-id="${act.id}">
+          <div class="activity-row-main">
+            <div class="activity-row-icon ${act.type}">
               ${icon}
             </div>
-            <div class="activity-title-block">
-              <h3>${escapeHTML(act.title)}</h3>
-              <div class="activity-meta">
-                <span class="badge badge-${act.type}">${typeName}</span>
-                <span class="meta-item">${Icons.calendar('icon-sm')} ${formatDate(act.date)}</span>
-                ${act.intensity ? `<span class="badge" style="background-color: var(--bg-subtle); color: var(--text-secondary); text-transform: capitalize;">${act.intensity}</span>` : ''}
-                ${act.notes ? `<span class="meta-item" title="${escapeHTML(act.notes)}">${Icons.note('icon-sm')} ${escapeHTML(act.notes.length > 24 ? act.notes.substring(0, 24) + '...' : act.notes)}</span>` : ''}
+            <div class="activity-row-info">
+              <h4>${escapeHTML(act.title)}</h4>
+              <div class="activity-row-meta">
+                <span>${typeName}</span> · <span>${formatDate(act.date)}</span>
               </div>
             </div>
           </div>
 
-          <div class="activity-stats-row">
+          <div class="activity-row-metrics">
             ${act.distance > 0 ? `
-              <div class="stat-item-inline">
+              <div class="activity-row-stat">
                 <strong>${formatDistance(act.distance, unit)}</strong>
                 <span>Jarak</span>
               </div>
             ` : ''}
 
-            <div class="stat-item-inline">
+            <div class="activity-row-stat">
               <strong>${formatDuration(act.duration)}</strong>
               <span>Durasi</span>
             </div>
 
             ${act.calories > 0 ? `
-              <div class="stat-item-inline">
+              <div class="activity-row-stat">
                 <strong>${act.calories} kcal</strong>
-                <span>Kalori (Est.)</span>
+                <span>Kalori</span>
               </div>
             ` : ''}
 
-            ${pace !== '-' ? `
-              <div class="stat-item-inline">
-                <strong>${pace}</strong>
-                <span>Pace Rata-rata</span>
-              </div>
-            ` : ''}
-
-            <div class="activity-actions">
+            <div class="activity-row-actions">
               <button class="btn-icon btn-edit-activity" data-id="${act.id}" title="Edit Aktivitas" aria-label="Edit Aktivitas">
                 <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                   <path d="M12 20h9"></path>
