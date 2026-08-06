@@ -1670,14 +1670,14 @@
 
 /* Settings Control Center Section Styling */
 .settings-section {
-  padding: 2rem 0 4rem;
+  padding: 1.5rem 0 4rem;
 }
 
 .settings-header-bar {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  margin-bottom: 1.75rem;
+  margin-bottom: 1.5rem;
 }
 
 .settings-title {
@@ -1693,37 +1693,49 @@
   margin-top: 0.25rem;
 }
 
-.settings-layout-container {
-  display: flex;
-  flex-direction: column;
-  gap: 1.5rem;
-  max-width: 960px;
-}
-
-.settings-group-card {
+.settings-panel-card {
   background-color: var(--color-surface);
   border: 1px solid var(--color-border);
   border-radius: var(--radius-2xl);
-  padding: 1.5rem 1.75rem;
+  padding: 1.75rem 2rem;
+  max-width: 820px;
   box-shadow: var(--shadow-sm);
 }
 
-.settings-group-header {
-  margin-bottom: 1.25rem;
-  padding-bottom: 0.75rem;
-  border-bottom: 1px solid var(--color-border);
+.settings-group {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
 }
 
 .settings-group-title {
-  font-size: 1.15rem;
+  font-size: 1.05rem;
   font-weight: var(--font-weight-extrabold);
-  color: var(--color-text-primary);
+  color: var(--color-primary);
+  margin-bottom: 0.5rem;
+  letter-spacing: 0.01em;
+  text-transform: uppercase;
 }
 
-.settings-group-desc {
-  font-size: 0.8rem;
+.settings-divider {
+  height: 1px;
+  background-color: var(--color-border);
+  margin: 1.25rem 0;
+}
+
+.sidebar-divider {
+  height: 1px;
+  background-color: var(--color-border);
+  margin: 0.75rem 0.5rem;
+}
+
+.sidebar-utility-link {
   color: var(--color-text-secondary);
-  margin-top: 0.2rem;
+}
+
+.sidebar-utility-link:hover,
+.sidebar-utility-link.active {
+  color: var(--color-primary);
 }
 
 .setting-row {
