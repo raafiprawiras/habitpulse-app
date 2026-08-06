@@ -14,7 +14,6 @@ export const StatisticsManager = {
     const goals = StorageEngine.getWeeklyGoals();
 
     const stats = {
-      // Overall totals
       totalActivities: activities.length,
       totalDistanceKm: 0,
       totalDurationMins: 0,
@@ -22,11 +21,9 @@ export const StatisticsManager = {
       avgDurationMins: 0,
       mostActiveSport: '-',
 
-      // Streaks
       currentStreak: 0,
       bestStreak: 0,
 
-      // Current week metrics & goals
       weekly: {
         activitiesCount: 0,
         totalDistanceKm: 0,
@@ -41,7 +38,6 @@ export const StatisticsManager = {
         goalPercentage: 0
       },
 
-      // Breakdown by sport category
       byType: {
         running: { count: 0, distance: 0, duration: 0, calories: 0, percentage: 0 },
         cycling: { count: 0, distance: 0, duration: 0, calories: 0, percentage: 0 },
@@ -49,20 +45,16 @@ export const StatisticsManager = {
         workout: { count: 0, distance: 0, duration: 0, calories: 0, percentage: 0 }
       },
 
-      // Achievements status
       achievements: [],
-
-      // Motivational Message
       motivationalMessage: ''
     };
 
     if (activities.length === 0) {
       stats.achievements = this.calculateAchievements(activities, stats);
-      stats.motivationalMessage = "Start your first activity this week to build your health streak!";
+      stats.motivationalMessage = "Mulai aktivitas pertamamu minggu ini!";
       return stats;
     }
 
-    // Process each activity
     activities.forEach(act => {
       const distance = Number(act.distance) || 0;
       const duration = Number(act.duration) || 0;
@@ -72,7 +64,6 @@ export const StatisticsManager = {
       stats.totalDurationMins += duration;
       stats.totalCalories += calories;
 
-      // Current week processing
       if (isDateInCurrentWeek(act.date)) {
         stats.weekly.activitiesCount += 1;
         stats.weekly.totalDistanceKm += distance;
@@ -80,7 +71,6 @@ export const StatisticsManager = {
         stats.weekly.totalCalories += calories;
       }
 
-      // Category breakdown
       if (stats.byType[act.type]) {
         stats.byType[act.type].count += 1;
         stats.byType[act.type].distance += distance;
@@ -89,10 +79,8 @@ export const StatisticsManager = {
       }
     });
 
-    // Average duration
     stats.avgDurationMins = Math.round(stats.totalDurationMins / activities.length);
 
-    // Most active sport
     let maxCount = -1;
     const typeLabels = { running: 'Lari', cycling: 'Bersepeda', walking: 'Jalan Kaki', workout: 'Workout' };
     Object.keys(stats.byType).forEach(type => {
@@ -103,31 +91,133 @@ export const StatisticsManager = {
       }
     });
 
-    // Goal Percentages
     stats.weekly.activitiesPct = Math.min(Math.round((stats.weekly.activitiesCount / goals.targetActivities) * 100), 100);
     stats.weekly.minutesPct = Math.min(Math.round((stats.weekly.totalDurationMins / goals.targetMinutes) * 100), 100);
     stats.weekly.distancePct = Math.min(Math.round((stats.weekly.totalDistanceKm / goals.targetDistance) * 100), 100);
     stats.weekly.goalPercentage = stats.weekly.activitiesPct;
 
-    // Calculate Streaks
     const streaks = this.calculateStreak(activities);
     stats.currentStreak = streaks.currentStreak;
     stats.bestStreak = streaks.bestStreak;
 
-    // Achievements
     stats.achievements = this.calculateAchievements(activities, stats);
-
-    // Motivational Message
     stats.motivationalMessage = this.generateMotivationalMessage(stats.weekly);
 
     return stats;
   },
 
   /**
-   * Timezone-safe Activity Streak Calculator
+   * Group activities into 4 calendar weeks for Trend Chart
    * @param {Array<Object>} activities 
-   * @returns {{currentStreak: number, bestStreak: number}}
+   * @returns {Array<Object>}
    */
+  calculateFourWeeksTrend(activities = []) {
+    const now = new Date();
+    const currentDay = now.getDay();
+    const diffToMon = now.getDate() - currentDay + (currentDay === 0 ? -6 : 1);
+    const thisWeekMon = new Date(now.getFullYear(), now.getMonth(), diffToMon, 0, 0, 0, 0);
+
+    const msPerWeek = 7 * 24 * 60 * 60 * 1000;
+
+    const weeks = [
+      {
+        label: '4 minggu lalu',
+        start: new Date(thisWeekMon.getTime() - 3 * msPerWeek),
+        end: new Date(thisWeekMon.getTime() - 2 * msPerWeek - 1),
+        minutes: 0,
+        distance: 0,
+        sessions: 0
+      },
+      {
+        label: '3 minggu lalu',
+        start: new Date(thisWeekMon.getTime() - 2 * msPerWeek),
+        end: new Date(thisWeekMon.getTime() - 1 * msPerWeek - 1),
+        minutes: 0,
+        distance: 0,
+        sessions: 0
+      },
+      {
+        label: '2 minggu lalu',
+        start: new Date(thisWeekMon.getTime() - 1 * msPerWeek),
+        end: new Date(thisWeekMon.getTime() - 1),
+        minutes: 0,
+        distance: 0,
+        sessions: 0
+      },
+      {
+        label: 'Minggu ini',
+        start: thisWeekMon,
+        end: new Date(thisWeekMon.getTime() + msPerWeek - 1),
+        minutes: 0,
+        distance: 0,
+        sessions: 0
+      }
+    ];
+
+    activities.forEach(act => {
+      if (!act.date) return;
+      const d = new Date(act.date);
+      if (isNaN(d.getTime())) return;
+
+      weeks.forEach(w => {
+        if (d >= w.start && d <= w.end) {
+          w.minutes += Number(act.duration) || 0;
+          w.distance += Number(act.distance) || 0;
+          w.sessions += 1;
+        }
+      });
+    });
+
+    return weeks;
+  },
+
+  /**
+   * Aggregate category metrics & HR check
+   * @param {Array<Object>} activities 
+   * @returns {Object}
+   */
+  calculateCategoryMetrics(activities = []) {
+    const categories = {
+      running: { key: 'running', name: 'Lari', color: '#7CE424', count: 0, duration: 0, distance: 0, hrSum: 0, hrCount: 0 },
+      cycling: { key: 'cycling', name: 'Bersepeda', color: '#38BDF8', count: 0, duration: 0, distance: 0, hrSum: 0, hrCount: 0 },
+      walking: { key: 'walking', name: 'Jalan Kaki', color: '#A855F7', count: 0, duration: 0, distance: 0, hrSum: 0, hrCount: 0 },
+      workout: { key: 'workout', name: 'Workout', color: '#F97316', count: 0, duration: 0, distance: 0, hrSum: 0, hrCount: 0 }
+    };
+
+    let totalDuration = 0;
+    let totalHRCount = 0;
+
+    activities.forEach(act => {
+      const cat = categories[act.type];
+      if (cat) {
+        cat.count += 1;
+        const dur = Number(act.duration) || 0;
+        cat.duration += dur;
+        totalDuration += dur;
+        cat.distance += Number(act.distance) || 0;
+
+        if (act.heartRate && Number(act.heartRate) > 0) {
+          cat.hrSum += Number(act.heartRate);
+          cat.hrCount += 1;
+          totalHRCount += 1;
+        }
+      }
+    });
+
+    Object.keys(categories).forEach(k => {
+      const c = categories[k];
+      c.percentage = totalDuration > 0 ? Math.round((c.duration / totalDuration) * 100) : 0;
+      c.avgDuration = c.count > 0 ? Math.round(c.duration / c.count) : 0;
+      c.avgHR = c.hrCount > 0 ? Math.round(c.hrSum / c.hrCount) : 0;
+    });
+
+    return {
+      categories,
+      totalDuration,
+      hasHRData: totalHRCount > 0
+    };
+  },
+
   calculateStreak(activities = []) {
     if (activities.length === 0) return { currentStreak: 0, bestStreak: 0 };
 
@@ -181,12 +271,6 @@ export const StatisticsManager = {
     };
   },
 
-  /**
-   * Calculate dynamic milestone achievements
-   * @param {Array<Object>} activities 
-   * @param {Object} stats 
-   * @returns {Array<Object>}
-   */
   calculateAchievements(activities = [], stats = {}) {
     const totalActs = activities.length;
     const totalDist = stats.totalDistanceKm || 0;
@@ -195,66 +279,59 @@ export const StatisticsManager = {
     return [
       {
         id: 'ach_first_act',
-        title: 'First Activity',
-        description: 'Record your very first workout activity',
+        title: 'Aktivitas Pertama',
+        description: 'Catat sesi latihan pertamamu',
         icon: '🎯',
         unlocked: totalActs >= 1,
-        progressText: totalActs >= 1 ? 'Unlocked' : '0/1 Activity'
+        progressText: totalActs >= 1 ? 'Terbuka' : '0/1 Sesi'
       },
       {
         id: 'ach_5_acts',
-        title: '5 Activities',
-        description: 'Complete 5 fitness sessions',
+        title: '5 Aktivitas',
+        description: 'Selesaikan 5 sesi latihan kebugaran',
         icon: '🏆',
         unlocked: totalActs >= 5,
-        progressText: totalActs >= 5 ? 'Unlocked' : `${totalActs}/5 Activities`
+        progressText: totalActs >= 5 ? 'Terbuka' : `${totalActs}/5 Sesi`
       },
       {
         id: 'ach_10_acts',
-        title: '10 Activities',
-        description: 'Reach 10 completed activities milestone',
+        title: '10 Aktivitas',
+        description: 'Mencapai pencapaian 10 aktivitas',
         icon: '🥇',
         unlocked: totalActs >= 10,
-        progressText: totalActs >= 10 ? 'Unlocked' : `${totalActs}/10 Activities`
+        progressText: totalActs >= 10 ? 'Terbuka' : `${totalActs}/10 Sesi`
       },
       {
         id: 'ach_first_10km',
-        title: 'First 10 KM',
-        description: 'Accumulate 10 km total distance',
+        title: '10 KM Pertama',
+        description: 'Kumpulkan total jarak 10 km',
         icon: '📍',
         unlocked: totalDist >= 10,
-        progressText: totalDist >= 10 ? 'Unlocked' : `${totalDist.toFixed(1)}/10 KM`
+        progressText: totalDist >= 10 ? 'Terbuka' : `${totalDist.toFixed(1)}/10 KM`
       },
       {
         id: 'ach_7day_streak',
-        title: '7 Day Streak',
-        description: 'Maintain a 7 consecutive days activity streak',
+        title: '7 Hari Streak',
+        description: 'Pertahankan streak 7 hari berturut-turut',
         icon: '🔥',
         unlocked: maxStreak >= 7,
-        progressText: maxStreak >= 7 ? 'Unlocked' : `${maxStreak}/7 Days`
+        progressText: maxStreak >= 7 ? 'Terbuka' : `${maxStreak}/7 Hari`
       }
     ];
   },
 
-  /**
-   * Generate data-backed motivational message
-   * @param {Object} weekly 
-   * @returns {string}
-   */
   generateMotivationalMessage(weekly = {}) {
     const count = weekly.activitiesCount || 0;
     const target = weekly.targetActivities || 5;
 
     if (count === 0) {
-      return "Start your first activity this week to build your health streak!";
+      return "Mulai aktivitas pertamamu minggu ini!";
     } else if (count >= target) {
-      return "Weekly goal completed. Keep the momentum going!";
+      return "Target mingguan tercapai! Pertahankan konsistensi.";
     } else {
       const remaining = target - count;
-      if (remaining === 1) {
-        return "Great progress! You're 1 activity away from your weekly goal.";
-      }
-      return `Great progress! You're ${remaining} activities away from your weekly goal.`;
+      return `Bagus! Kurang ${remaining} aktivitas lagi untuk mencapai target mingguan.`;
     }
   }
 };
+

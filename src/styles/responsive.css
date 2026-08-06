@@ -115,6 +115,18 @@
   .charts-grid {
     grid-template-columns: 1fr !important;
   }
+
+  .statistics-summary-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .statistics-charts-row1 {
+    grid-template-columns: 1fr;
+  }
+
+  .statistics-charts-row2 {
+    grid-template-columns: 1fr;
+  }
 }
 
 /* Mobile Devices (< 768px: 320px, 360px, 375px, 390px, 430px) */
@@ -177,6 +189,22 @@
 
   .form-row-2col {
     grid-template-columns: 1fr;
+  }
+
+  .statistics-summary-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .statistics-charts-row1 {
+    grid-template-columns: 1fr;
+  }
+
+  .statistics-charts-row2 {
+    grid-template-columns: 1fr;
+  }
+
+  .statistics-chart-wrapper {
+    height: 250px;
   }
 
   /* Hero & Landing Responsive Adjustments */

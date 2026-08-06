@@ -1114,3 +1114,174 @@
   padding: 0.65rem 1.5rem;
   border-radius: var(--radius-full);
 }
+
+/* Statistics Page Styling */
+.statistics-section {
+  padding: 2rem 0 4rem;
+}
+
+.statistics-header-bar {
+  margin-bottom: 1.5rem;
+}
+
+.statistics-title {
+  font-size: clamp(1.5rem, 2.5vw, 2.125rem);
+  font-weight: var(--font-weight-extrabold);
+  color: var(--color-text-primary);
+  letter-spacing: -0.02em;
+}
+
+.statistics-subtitle {
+  font-size: var(--font-size-sm);
+  color: var(--color-text-secondary);
+  margin-top: 0.25rem;
+}
+
+.statistics-summary-grid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 1.25rem;
+  margin-bottom: 1.75rem;
+}
+
+.statistics-charts-row1 {
+  display: grid;
+  grid-template-columns: 1.8fr 1fr;
+  gap: 1.5rem;
+  margin-bottom: 1.75rem;
+}
+
+.statistics-charts-row2 {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1.5rem;
+  margin-bottom: 2rem;
+}
+
+.statistics-chart-card {
+  background-color: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-xl);
+  padding: 1.25rem 1.5rem;
+  display: flex;
+  flex-direction: column;
+  box-shadow: var(--shadow-sm);
+  transition: border-color 0.2s ease, background-color 0.2s ease, transform 0.2s ease;
+  min-width: 0;
+  width: 100%;
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .statistics-chart-card:hover {
+    border-color: rgba(124, 228, 36, 0.30);
+    background-color: var(--color-surface-hover);
+    transform: translateY(-2px);
+  }
+
+  .summary-card:hover {
+    border-color: rgba(124, 228, 36, 0.30);
+    background-color: var(--color-surface-hover);
+    transform: translateY(-2px);
+  }
+}
+
+.chart-card-header {
+  margin-bottom: 1rem;
+}
+
+.chart-card-title {
+  font-size: 1.05rem;
+  font-weight: var(--font-weight-extrabold);
+  color: var(--color-text-primary);
+}
+
+.chart-card-subtitle {
+  font-size: 0.775rem;
+  color: var(--color-text-secondary);
+  margin-top: 0.15rem;
+}
+
+.statistics-chart-wrapper {
+  position: relative;
+  width: 100%;
+  height: clamp(240px, 35vh, 320px);
+  min-width: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.chart-empty-overlay {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: rgba(18, 26, 30, 0.85);
+  color: var(--color-text-secondary);
+  font-size: 0.85rem;
+  font-weight: var(--font-weight-bold);
+  z-index: 10;
+  border-radius: var(--radius-lg);
+  padding: 1.5rem;
+  text-align: center;
+}
+
+/* Rekap per Cabang List */
+.recap-list-container {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  margin-top: 0.5rem;
+}
+
+.recap-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0.75rem 0.25rem;
+  border-bottom: 1px solid var(--color-border);
+  font-size: 0.875rem;
+}
+
+.recap-row:last-child {
+  border-bottom: none;
+}
+
+.recap-left {
+  display: flex;
+  align-items: center;
+  gap: 0.65rem;
+}
+
+.recap-dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  display: inline-block;
+  flex-shrink: 0;
+}
+
+.recap-name {
+  font-weight: var(--font-weight-bold);
+  color: var(--color-text-primary);
+}
+
+.recap-right {
+  display: flex;
+  align-items: center;
+  gap: 1.25rem;
+}
+
+.recap-count {
+  font-size: 0.825rem;
+  color: var(--color-text-secondary);
+}
+
+.recap-duration {
+  font-size: 0.9rem;
+  font-weight: var(--font-weight-extrabold);
+  color: var(--color-text-primary);
+  min-width: 60px;
+  text-align: right;
+}
