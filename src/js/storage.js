@@ -7,7 +7,8 @@ const STORAGE_KEYS = {
   THEME: 'habitpulse_theme',
   WEEKLY_GOALS: 'habitpulse_weekly_goals',
   UNITS: 'habitpulse_units',
-  USER_SETTINGS: 'habitpulse_user_settings'
+  USER_SETTINGS: 'habitpulse_user_settings',
+  UNLOCKED_ACHIEVEMENTS: 'habitpulse_unlocked_achievements'
 };
 
 const INITIAL_SEED_ACTIVITIES = [
@@ -58,9 +59,10 @@ const INITIAL_SEED_ACTIVITIES = [
 ];
 
 const DEFAULT_WEEKLY_GOALS = {
-  targetActivities: 5,
+  targetActivities: 4,
   targetMinutes: 150,
-  targetDistance: 20
+  targetDistance: 20,
+  targetCalories: 1500
 };
 
 export const StorageEngine = {
@@ -135,7 +137,7 @@ export const StorageEngine = {
 
   /**
    * Get Weekly Goals configuration
-   * @returns {{targetActivities: number, targetMinutes: number, targetDistance: number}}
+   * @returns {{targetActivities: number, targetMinutes: number, targetDistance: number, targetCalories: number}}
    */
   getWeeklyGoals() {
     const goals = this.get(STORAGE_KEYS.WEEKLY_GOALS, null);
@@ -143,7 +145,12 @@ export const StorageEngine = {
       this.set(STORAGE_KEYS.WEEKLY_GOALS, DEFAULT_WEEKLY_GOALS);
       return DEFAULT_WEEKLY_GOALS;
     }
-    return goals;
+    return {
+      targetActivities: goals.targetActivities || DEFAULT_WEEKLY_GOALS.targetActivities,
+      targetMinutes: goals.targetMinutes || DEFAULT_WEEKLY_GOALS.targetMinutes,
+      targetDistance: goals.targetDistance || DEFAULT_WEEKLY_GOALS.targetDistance,
+      targetCalories: goals.targetCalories || DEFAULT_WEEKLY_GOALS.targetCalories
+    };
   },
 
   /**
@@ -154,9 +161,26 @@ export const StorageEngine = {
     const updated = {
       targetActivities: Number(goals.targetActivities) || DEFAULT_WEEKLY_GOALS.targetActivities,
       targetMinutes: Number(goals.targetMinutes) || DEFAULT_WEEKLY_GOALS.targetMinutes,
-      targetDistance: Number(goals.targetDistance) || DEFAULT_WEEKLY_GOALS.targetDistance
+      targetDistance: Number(goals.targetDistance) || DEFAULT_WEEKLY_GOALS.targetDistance,
+      targetCalories: Number(goals.targetCalories) || DEFAULT_WEEKLY_GOALS.targetCalories
     };
     return this.set(STORAGE_KEYS.WEEKLY_GOALS, updated);
+  },
+
+  /**
+   * Get unlocked achievements metadata map
+   * @returns {Object<string, {unlockedAt: string, notified: boolean}>}
+   */
+  getUnlockedAchievements() {
+    return this.get(STORAGE_KEYS.UNLOCKED_ACHIEVEMENTS, {}) || {};
+  },
+
+  /**
+   * Save unlocked achievements metadata map
+   * @param {Object} map 
+   */
+  saveUnlockedAchievements(map) {
+    return this.set(STORAGE_KEYS.UNLOCKED_ACHIEVEMENTS, map);
   },
 
   /**

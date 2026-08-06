@@ -268,13 +268,54 @@
 
         </div>
 
-        <!-- Section 2: Milestone Achievements Section -->
-    <section id="achievements" class="section-padding">
+        <!-- Section 2: Goals & Achievements Section -->
+    <section id="achievements" class="target-section">
       <div class="container">
-        <div class="section-header">
-          <span class="section-subtitle">Lencana Pencapaian</span>
-          <h2 class="section-title">Milestone Achievements</h2>
-          <p class="section-desc">Unlock lencana pencapaian eksklusif berdasarkan aktivitas nyata dan rekor latihan Anda.</p>
+        <!-- Target Page Header -->
+        <div class="target-header-bar">
+          <div class="target-header-text">
+            <h1 class="target-title">Target</h1>
+            <p class="target-subtitle">Komitmen mingguan dan pencapaian yang sudah kamu buka.</p>
+          </div>
+          <button id="btn-edit-goals" class="btn btn-secondary btn-edit-goals-cta" title="Atur Target Mingguan">
+            <span>Atur Target</span>
+          </button>
+        </div>
+
+        <!-- Weekly Goals Container -->
+        <div id="weekly-goals-container" class="weekly-goals-card">
+          <!-- Rendered dynamically by achievements.js -->
+        </div>
+
+        <!-- Achievements Section Toolbar & Filters -->
+        <div class="achievements-toolbar">
+          <h2 class="achievements-section-title">Pencapaian</h2>
+          
+          <div class="achievements-filter-row">
+            <div class="achievements-status-pills" role="tablist" aria-label="Filter Status Pencapaian">
+              <button class="ach-pill active" data-filter="all" role="tab" aria-selected="true">Semua</button>
+              <button class="ach-pill" data-filter="unlocked" role="tab" aria-selected="false">Terbuka</button>
+              <button class="ach-pill" data-filter="in_progress" role="tab" aria-selected="false">Dalam Progres</button>
+              <button class="ach-pill" data-filter="locked" role="tab" aria-selected="false">Terkunci</button>
+            </div>
+
+            <div class="achievements-category-wrapper">
+              <select id="ach-category-select" class="form-control ach-select" aria-label="Filter Kategori Pencapaian">
+                <option value="all">Semua Kategori</option>
+                <option value="general">Umum</option>
+                <option value="streak">Streak</option>
+                <option value="distance">Jarak</option>
+                <option value="time">Waktu</option>
+                <option value="running">Lari</option>
+                <option value="cycling">Bersepeda</option>
+                <option value="walking">Jalan Kaki</option>
+                <option value="workout">Workout</option>
+                <option value="consistency">Konsistensi</option>
+                <option value="time_of_day">Waktu Latihan</option>
+                <option value="all_rounder">All Rounder</option>
+              </select>
+            </div>
+          </div>
         </div>
 
         <!-- Achievements Grid Container -->
@@ -546,31 +587,43 @@
 
   <!-- Goal Settings Modal UI -->
   <div id="modal-goal-settings" class="modal-overlay" aria-hidden="true" role="dialog" aria-labelledby="goal-modal-title">
-    <div class="modal-container" style="max-width: 440px;">
+    <div class="modal-container" style="max-width: 460px;">
       <div class="modal-header">
-        <h2 id="goal-modal-title" class="modal-title">Set Custom Weekly Goals</h2>
+        <div>
+          <h2 id="goal-modal-title" class="modal-title">Atur Target Mingguan</h2>
+          <p class="modal-subtitle">Sesuaikan target latihan fisik sesuai komitmen pribadi.</p>
+        </div>
         <button id="btn-close-goal-modal" class="btn-icon" aria-label="Tutup Modal">✕</button>
       </div>
 
       <form id="form-weekly-goals" class="modal-body">
-        <div class="form-group">
-          <label for="goal-target-activities" class="form-label">Target Activities per Week *</label>
-          <input type="number" id="goal-target-activities" class="form-control" min="1" max="50" step="1" required />
+        <div class="form-row-2col">
+          <div class="form-group">
+            <label for="goal-target-distance" class="form-label">Target Jarak (KM) *</label>
+            <input type="number" id="goal-target-distance" class="form-control" min="1" max="500" step="0.5" required />
+          </div>
+
+          <div class="form-group">
+            <label for="goal-target-minutes" class="form-label">Target Menit Aktif *</label>
+            <input type="number" id="goal-target-minutes" class="form-control" min="10" max="2000" step="5" required />
+          </div>
         </div>
 
-        <div class="form-group">
-          <label for="goal-target-minutes" class="form-label">Target Active Minutes per Week *</label>
-          <input type="number" id="goal-target-minutes" class="form-control" min="10" max="2000" step="5" required />
-        </div>
+        <div class="form-row-2col">
+          <div class="form-group">
+            <label for="goal-target-calories" class="form-label">Target Kalori (kcal) *</label>
+            <input type="number" id="goal-target-calories" class="form-control" min="100" max="20000" step="50" required />
+          </div>
 
-        <div class="form-group">
-          <label for="goal-target-distance" class="form-label">Target Distance (KM) per Week *</label>
-          <input type="number" id="goal-target-distance" class="form-control" min="1" max="500" step="0.5" required />
+          <div class="form-group">
+            <label for="goal-target-activities" class="form-label">Target Sesi *</label>
+            <input type="number" id="goal-target-activities" class="form-control" min="1" max="50" step="1" required />
+          </div>
         </div>
 
         <div class="modal-footer" style="padding-left: 0; padding-right: 0; margin-top: 1rem;">
           <button type="button" id="btn-cancel-goal-modal" class="btn btn-secondary">Batal</button>
-          <button type="submit" class="btn btn-primary">Simpan Goal</button>
+          <button type="submit" class="btn btn-primary btn-submit-activity">Simpan Target</button>
         </div>
       </form>
     </div>
